@@ -37,7 +37,7 @@ class WeatherModel {
           (currentWeatherData['main']['feels_like'] as double).round(),
       windSpeed: (currentWeatherData['wind']['speed'] as double).round(),
       humidity: currentWeatherData['main']['humidity'],
-      visibility: currentWeatherData['visibility'] / 1000,
+      visibility: ((currentWeatherData['visibility'] / 1000) as double).round(),
       icon: currentWeatherData['weather'][0]['icon'],
       description: currentWeatherData['weather'][0]['description'],
     );

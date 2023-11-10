@@ -1,6 +1,6 @@
 
 import 'package:geolocator/geolocator.dart';
-import 'package:coding_challenge_weather/views/loading_screen.dart/custom_alert_dialog.dart';
+import 'package:coding_challenge_weather/views/main_screen/custom_alert_dialog.dart';
 
 class Location {
   Future<bool> _handleLocationPermission() async {
