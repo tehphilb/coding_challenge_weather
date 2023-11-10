@@ -19,6 +19,7 @@ class MainScreen extends ConsumerWidget {
     Future<WeatherModel> weatherData = fetchWeatherForecast();
 
     return Scaffold(
+      backgroundColor: Constants.textColor,
       body: FutureBuilder(
         future: weatherData,
         builder: (context, snapshot) {

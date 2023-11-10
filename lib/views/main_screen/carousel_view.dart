@@ -52,7 +52,7 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
               ),
             ),
             title: Text(
-              'City Name',
+              'Hamburg',
               style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -63,20 +63,32 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
             color: colors[index],
             child: Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   DateView(
                     colors: colors,
                     index: index,
                   ),
                   Center(
-                      child: Text(
-                    'Sunny',
-                    style: TextStyle(
-                      color: Constants.textColor,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
+                    child: Text(
+                      'Sunny',
+                      style: TextStyle(
+                        color: Constants.textColor,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ))
+                  ),
+                  Center(
+                    child: Text(
+                      '17°',
+                      style: TextStyle(
+                        color: Constants.textColor,
+                        fontSize: 200.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
