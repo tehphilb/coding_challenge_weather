@@ -2,6 +2,7 @@
 
 import 'package:coding_challenge_weather/constants/constants.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
+import 'package:coding_challenge_weather/views/search_view/animated_search_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -38,15 +39,7 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
           appBar: AppBar(
             elevation: 0.0,
             backgroundColor: colors[colorIndex],
-            leading: IconButton(
-              splashColor: Constants.transparent,
-              onPressed: () {},
-              icon: Icon(
-                Icons.add_rounded,
-                color: Constants.textColor,
-                size: 36,
-              ),
-            ),
+            leading: SearchView(),
             title: Text(
               widget.data.cityName,
               style: GoogleFonts.inter(
@@ -148,7 +141,7 @@ class ForecastView extends ConsumerWidget {
             IconButton(
               splashColor: Constants.transparent,
               onPressed: () {
-                print('pressed arrow');
+                //print('pressed arrow');
               },
               icon: Icon(
                 Icons.arrow_circle_right_rounded,

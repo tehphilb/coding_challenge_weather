@@ -9,7 +9,7 @@ import 'package:coding_challenge_weather/models/weather_model.dart';
 Future<WeatherModel> fetchWeatherForecast() async {
   final position = await Location().getCurrentPosition();
   final url = Uri.parse(
-      'https://api.openweathermap.org/data/2.5/forecast?lat=${position.latitude}&lon=${position.longitude}&units=metric&appid=$apiKey');
+      'https://api.openweathermap.org/data/2.5/forecast?lat=${position.latitude}&lon=${position.longitude}&units=metric&appid=$weatherApiKey');
 
   try {
     final response = await http.get(url);
@@ -24,3 +24,5 @@ Future<WeatherModel> fetchWeatherForecast() async {
     throw Exception('Failed to load weather forecast: $e');
   }
 }
+
+
