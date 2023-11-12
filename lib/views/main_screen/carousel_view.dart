@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_carousel_slider/carousel_slider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CarouselView extends ConsumerStatefulWidget {
   const CarouselView({
@@ -20,76 +21,82 @@ class CarouselView extends ConsumerStatefulWidget {
 }
 
 class _CarouselViewState extends ConsumerState<CarouselView> {
-  final List<Color> colors = [
-    Constants.primaryBackgroundColor,
-    Constants.secondaryBackgroundColor,
-    Constants.thirdBackgroundColor
-  ];
-  final List<String> letters = [
-    "A",
-    "B",
-    "C",
-  ];
+  final List<Color> colors = Constants.colors;
 
   final bool isPlaying = false;
   GlobalKey sliderKey = GlobalKey();
+  GlobalKey scollKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return CarouselSlider.builder(
       key: sliderKey,
       unlimitedMode: true,
-      slideBuilder: (index) {
+      slideBuilder: (colorIndex) {
         return Scaffold(
+          backgroundColor: colors[colorIndex],
           appBar: AppBar(
-            backgroundColor: colors[index],
+            elevation: 0.0,
+            backgroundColor: colors[colorIndex],
             leading: IconButton(
+              splashColor: Constants.transparent,
               onPressed: () {},
               icon: Icon(
-                Icons.menu_rounded,
+                Icons.add_rounded,
                 color: Constants.textColor,
                 size: 36,
               ),
             ),
             title: Text(
-              'Hamburg',
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -0.3),
+              widget.data.cityName,
+              style: GoogleFonts.inter(
+                color: Constants.textColor,
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.3,
+              ),
             ),
           ),
-          body: Container(
-            color: colors[index],
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  DateView(
-                    colors: colors,
-                    index: index,
-                  ),
-                  Center(
-                    child: Text(
-                      'Sunny',
-                      style: TextStyle(
-                        color: Constants.textColor,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+          body: SingleChildScrollView(
+            child: Container(
+              color: colors[colorIndex],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Constants.extraExtraExtraLargePadding,
+                ),
+                child: Column(
+                  children: [
+                    DateView(
+                      data: widget.data,
+                      colors: colors,
+                      index: colorIndex,
                     ),
-                  ),
-                  Center(
-                    child: Text(
-                      '17°',
-                      style: TextStyle(
-                        color: Constants.textColor,
-                        fontSize: 200.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        DescriptionView(
+                          data: widget.data,
+                        ),
+                        TemperatureView(
+                          data: widget.data,
+                        ),
+                        SummaryView(
+                          data: widget.data,
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    BlackCardView(
+                      data: widget.data,
+                      colors: colors,
+                      index: colorIndex,
+                    ),
+                    ForecastView(
+                      data: widget.data,
+                      colors: colors,
+                      colorIndex: colorIndex,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -105,25 +112,354 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
   }
 }
 
-class DateView extends StatelessWidget {
-  const DateView({
+class ForecastView extends ConsumerWidget {
+  const ForecastView({
     super.key,
+    required this.data,
+    required this.colors,
+    required this.colorIndex,
+  });
+
+  final WeatherModel data;
+  final List<Color> colors;
+  final int colorIndex;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: Constants.extraExtraLargePadding),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Weekly forecast',
+              textHeightBehavior: const TextHeightBehavior(
+                  applyHeightToLastDescent: true,
+                  applyHeightToFirstAscent: false,
+                  leadingDistribution: TextLeadingDistribution.even),
+              style: GoogleFonts.inter(
+                color: Constants.textColor,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            IconButton(
+              splashColor: Constants.transparent,
+              onPressed: () {
+                print('pressed arrow');
+              },
+              icon: Icon(
+                Icons.arrow_circle_right_rounded,
+                color: Constants.textColor,
+                size: 36,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: Constants.extraLargePadding),
+        SizedBox(
+          height: 120,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: data.forecast.length > 8 ? 8 : data.forecast.length,
+            itemBuilder: (context, index) {
+              debugPrint('data: ${data.forecast[index].temperature}');
+              return Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Container(
+                  width: 80,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Constants.textColor),
+                    // color: Constants.textColor,
+                    borderRadius:
+                        BorderRadius.circular(Constants.extraLargePadding),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(height: Constants.lagrePadding),
+                      Text(
+                        '${data.forecast[index].temperature}°',
+                        style: GoogleFonts.inter(
+                          color: Constants.textColor,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Image.network(
+                        'https://openweathermap.org/img/wn/${data.forecast[index].icon}.png',
+                        width: 36,
+                        color: Constants.textColor,
+                      ),
+                      Text(
+                        '${data.forecast[index].formattedDate}\n${data.forecast[index].formattedTime}',
+                        style: GoogleFonts.inter(
+                          color: Constants.textColor,
+                          fontSize: 10.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: Constants.normalPadding),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        SizedBox(height: Constants.extraExtraExtraLargePadding),
+      ],
+    );
+  }
+}
+
+class DescriptionView extends ConsumerWidget {
+  const DescriptionView({
+    super.key,
+    required this.data,
+  });
+
+  final WeatherModel data;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Align(
+      alignment: Alignment.center,
+      child: Text(
+        data.description,
+        style: GoogleFonts.inter(
+          color: Constants.textColor,
+          fontSize: 16.0,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+class TemperatureView extends ConsumerWidget {
+  const TemperatureView({
+    super.key,
+    required this.data,
+  });
+
+  final WeatherModel data;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Align(
+      alignment: Alignment.center,
+      child: SizedBox(
+        height: 200.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              data.currentTemp.toString(),
+              textHeightBehavior: const TextHeightBehavior(
+                  applyHeightToLastDescent: true,
+                  applyHeightToFirstAscent: false,
+                  leadingDistribution: TextLeadingDistribution.even),
+              style: GoogleFonts.inter(
+                color: Constants.textColor,
+                fontSize: 170.0,
+                letterSpacing: -1.0,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            Text(
+              '°',
+              style: GoogleFonts.inter(
+                color: Constants.textColor,
+                fontSize: 120.0,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SummaryView extends ConsumerWidget {
+  const SummaryView({
+    super.key,
+    required this.data,
+  });
+
+  final WeatherModel data;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Daily Summary',
+          textHeightBehavior: const TextHeightBehavior(
+              applyHeightToLastDescent: true,
+              applyHeightToFirstAscent: false,
+              leadingDistribution: TextLeadingDistribution.even),
+          style: GoogleFonts.inter(
+            color: Constants.textColor,
+            fontSize: 16.0,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        SizedBox(height: Constants.normalPadding),
+        Text(
+          'Now it feels like ${data.feelsLikeTemp}°, actually ${data.currentTemp}°.\nToday, the temperture will be between ${data.minTemp}° and ${data.maxTemp}°.',
+          style: GoogleFonts.inter(
+            letterSpacing: -0.3,
+            color: Constants.textColor,
+            fontSize: 12.0,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(height: Constants.extraExtraLargePadding),
+      ],
+    );
+  }
+}
+
+class BlackCardView extends ConsumerWidget {
+  const BlackCardView({
+    super.key,
+    required this.data,
     required this.colors,
     required this.index,
   });
 
+  final WeatherModel data;
   final List<Color> colors;
   final int index;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+        decoration: BoxDecoration(
+          color: Constants.textColor,
+          borderRadius: BorderRadius.circular(Constants.extraLargePadding),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(Constants.extraExtraLargePadding),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.air_outlined,
+                    color: colors[index],
+                    size: 36,
+                  ),
+                  SizedBox(height: Constants.lagrePadding),
+                  Text(
+                    '${data.windSpeed} km/h',
+                    style: TextStyle(
+                      color: colors[index],
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Wind',
+                    style: TextStyle(
+                      color: colors[index],
+                      fontSize: 10.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: Constants.lagrePadding),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.water_drop_outlined,
+                    color: colors[index],
+                    size: 36,
+                  ),
+                  SizedBox(height: Constants.lagrePadding),
+                  Text(
+                    '${data.humidity}%',
+                    style: TextStyle(
+                      color: colors[index],
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Humidity',
+                    style: TextStyle(
+                      color: colors[index],
+                      fontSize: 10.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: Constants.lagrePadding),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.visibility_outlined,
+                    color: colors[index],
+                    size: 36,
+                  ),
+                  SizedBox(height: Constants.lagrePadding),
+                  Text(
+                    '${data.visibility} km',
+                    style: TextStyle(
+                      color: colors[index],
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Visibility',
+                    style: TextStyle(
+                      color: colors[index],
+                      fontSize: 10.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
+class DateView extends ConsumerWidget {
+  const DateView({
+    super.key,
+    required this.data,
+    required this.colors,
+    required this.index,
+  });
+
+  final WeatherModel data;
+  final List<Color> colors;
+  final int index;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(Constants.extraLargePadding),
       child: Center(
         child: Container(
           decoration: BoxDecoration(
             color: Constants.textColor,
-            borderRadius: BorderRadius.circular(16.0),
+            borderRadius: BorderRadius.circular(Constants.extraLargePadding),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -131,10 +467,11 @@ class DateView extends StatelessWidget {
               vertical: 4.0,
             ),
             child: Text(
-              'Friday, o1 January',
-              style: TextStyle(
-                fontSize: 12,
+              data.formattedDate,
+              style: GoogleFonts.inter(
                 color: colors[index],
+                fontSize: 12.0,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ),

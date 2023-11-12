@@ -1,4 +1,3 @@
-import 'package:coding_challenge_weather/views/main_screen/carousel_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,7 +27,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       title: 'Weather App',
       theme: ThemeData(
-        useMaterial3: true,
+        useMaterial3: false,
       ),
       home: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) =>
