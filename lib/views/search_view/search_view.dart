@@ -81,6 +81,8 @@ class _SearchViewState extends State<SearchView> {
         backgroundColor: Constants.transparent,
         elevation: 0,
         leading: IconButton(
+          color: Constants.transparent,
+          splashRadius: 1,
           splashColor: Constants.transparent,
           onPressed: () {
             Navigator.pop(context);
@@ -143,7 +145,8 @@ class _SearchViewState extends State<SearchView> {
                 itemBuilder: (context, index) {
                   final suggestion = nameSuggestions[index];
                   return ListTile(
-                    onLongPress: () => saveExit(suggestion),
+                    // splashColor: Constants.transparent,
+                    // onLongPress: () => saveExit(suggestion),
                     title: Text(
                       suggestion.name,
                       style: GoogleFonts.inter(
