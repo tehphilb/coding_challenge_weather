@@ -4,23 +4,28 @@ import 'dart:async';
 
 import 'package:coding_challenge_weather/constants/constants.dart';
 import 'package:coding_challenge_weather/models/city_names_model.dart';
+import 'package:coding_challenge_weather/models/isar_city_collection.dart';
 import 'package:coding_challenge_weather/services/api/city_names_api.dart';
+import 'package:coding_challenge_weather/services/isar_db/isar_services.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class Search extends StatefulWidget {
-  const Search({
+class SearchView extends StatefulWidget {
+  const SearchView({
     super.key,
   });
 
   @override
-  State<Search> createState() => _SearchState();
+  State<SearchView> createState() => _SearchViewState();
 }
 
-class _SearchState extends State<Search> {
-  final controller = TextEditingController();
-  Timer? _debounce;
-  List<CityNames> nameSuggestions = [];
+class _SearchViewState extends State<SearchView> {
+  final service = IsarService();
   final geocodingService = CityNamesApi();
+  final controller = TextEditingController();
+
+  Timer? _debounce;
+  List<CityName> nameSuggestions = [];
 
   @override
   void initState() {
@@ -56,6 +61,18 @@ class _SearchState extends State<Search> {
     );
   }
 
+  void saveExit(CityName suggestion) {
+    service.saveName(
+      CityNameIsar()
+        ..name = suggestion.name
+        ..latitude = suggestion.latitude
+        ..longitude = suggestion.longitude
+        ..country = suggestion.country
+        ..state = suggestion.state,
+    );
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,71 +93,88 @@ class _SearchState extends State<Search> {
         ),
         title: Text(
           'Search',
-          style: TextStyle(
+          style: GoogleFonts.inter(
             color: Constants.appWhite,
             fontSize: 24,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.3,
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: controller,
-              style: TextStyle(
-                color: Constants.appWhite,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Search',
-                hintStyle: TextStyle(
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: Constants.extraExtraExtraLargePadding,
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: Constants.extraExtraLargePadding,
+            ),
+            SizedBox(
+              // height: 45,
+              // width: 240,
+              child: TextField(
+                controller: controller,
+                style: GoogleFonts.inter(
                   color: Constants.appWhite,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
                 ),
-                border: InputBorder.none,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Constants.appWhite.withOpacity(0.2),
+                  hintText: 'Search for a city to add',
+                  hintStyle: GoogleFonts.inter(
+                    color: Constants.appWhite.withOpacity(0.8),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius:
+                        BorderRadius.circular(Constants.extraLargePadding),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: nameSuggestions.length,
-              itemBuilder: (context, index) {
-                print('NameSuggestions ${nameSuggestions[0].name}');
-                final suggestion = nameSuggestions[index];
-                return ListTile(
-                  title: Text(
-                    suggestion.name,
-                    style: TextStyle(
-                      color: Constants.appWhite,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+            Expanded(
+              child: ListView.builder(
+                itemCount: nameSuggestions.length,
+                itemBuilder: (context, index) {
+                  final suggestion = nameSuggestions[index];
+                  return ListTile(
+                    onLongPress: () => saveExit(suggestion),
+                    title: Text(
+                      suggestion.name,
+                      style: GoogleFonts.inter(
+                        color: Constants.appWhite,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
-                  ),
-                  subtitle: Text(
-                    suggestion.country,
-                    style: TextStyle(
-                      color: Constants.appWhite,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    subtitle: Text(
+                      '${suggestion.state}, ${suggestion.country}',
+                      style: GoogleFonts.inter(
+                        color: Constants.appWhite,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
-                  ),
-                  trailing: IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.add_rounded,
-                      color: Constants.appWhite,
-                      size: 36,
+                    trailing: IconButton(
+                      splashColor: Constants.transparent,
+                      onPressed: (() => saveExit(suggestion)),
+                      icon: Icon(
+                        Icons.add_rounded,
+                        color: Constants.appWhite,
+                        size: 20,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

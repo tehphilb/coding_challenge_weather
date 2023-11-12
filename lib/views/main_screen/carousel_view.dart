@@ -39,7 +39,7 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
           appBar: AppBar(
             elevation: 0.0,
             backgroundColor: colors[colorIndex],
-            leading: SearchView(),
+            leading: AnimatedSearchContainer(),
             title: Text(
               widget.data.cityName,
               style: GoogleFonts.inter(

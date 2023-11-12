@@ -1,11 +1,11 @@
-class CityNames {
+class CityName {
   final String name;
   final double latitude;
   final double longitude;
   final String country;
   final String? state;
 
-  CityNames({
+  CityName({
     required this.name,
     required this.latitude,
     required this.longitude,
@@ -13,13 +13,13 @@ class CityNames {
     this.state,
   });
 
-  factory CityNames.fromJson(Map<String, dynamic> json) {
-    return CityNames(
+  factory CityName.fromJson(Map<String, dynamic> json) {
+    return CityName(
       name: json['name'],
       latitude: json['latitude'],
       longitude: json['longitude'],
       country: json['country'],
-      state: json['state'],
+      state: json['state'] ?? json['name'],
     );
   }
 }
