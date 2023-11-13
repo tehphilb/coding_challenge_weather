@@ -13,7 +13,10 @@ import 'package:google_fonts/google_fonts.dart';
 class SearchView extends StatefulWidget {
   const SearchView({
     super.key,
+    required this.color,
   });
+
+  final Color color;
 
   @override
   State<SearchView> createState() => _SearchViewState();
@@ -76,12 +79,12 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Constants.textColor,
+      backgroundColor: widget.color,
       appBar: AppBar(
         backgroundColor: Constants.transparent,
         elevation: 0,
         leading: IconButton(
-          color: Constants.transparent,
+          color: Constants.textColor,
           splashRadius: 1,
           splashColor: Constants.transparent,
           onPressed: () {
@@ -89,14 +92,14 @@ class _SearchViewState extends State<SearchView> {
           },
           icon: Icon(
             Icons.arrow_back_rounded,
-            color: Constants.appWhite,
+            color: Constants.textColor,
             size: 36,
           ),
         ),
         title: Text(
           'Search',
           style: GoogleFonts.inter(
-            color: Constants.appWhite,
+            color: Constants.textColor,
             fontSize: 24,
             fontWeight: FontWeight.w900,
             letterSpacing: -0.3,
@@ -113,28 +116,29 @@ class _SearchViewState extends State<SearchView> {
               height: Constants.extraExtraLargePadding,
             ),
             SizedBox(
-              // height: 45,
-              // width: 240,
+              height: 48,
+              width: 300,
               child: TextField(
                 controller: controller,
                 style: GoogleFonts.inter(
-                  color: Constants.appWhite,
+                  color: Constants.textColor,
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
                 ),
                 decoration: InputDecoration(
+                  suffix: Icon(
+                    Icons.search_rounded,
+                    color: Constants.textColor,
+                    size: 36,
+                  ),
+                  focusColor: Constants.textColor,
                   filled: true,
-                  fillColor: Constants.appWhite.withOpacity(0.2),
+                  fillColor: widget.color,
                   hintText: 'Search for a city to add',
                   hintStyle: GoogleFonts.inter(
-                    color: Constants.appWhite.withOpacity(0.8),
+                    color: Constants.textColor.withOpacity(0.8),
                     fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(Constants.extraLargePadding),
-                    borderSide: BorderSide.none,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),

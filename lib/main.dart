@@ -27,7 +27,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       title: 'Weather App',
       theme: ThemeData(
-        useMaterial3: false,
+        useMaterial3: true,
       ),
       home: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) =>

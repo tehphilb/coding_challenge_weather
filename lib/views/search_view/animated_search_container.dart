@@ -21,14 +21,25 @@ class _AnimatedSearchContainerState extends State<AnimatedSearchContainer> {
 
     return OpenContainer(
       transitionType: containerTransitionType,
-      transitionDuration: const Duration(milliseconds: 600),
-      openBuilder: (context, _) => const SearchView(),
+      transitionDuration: const Duration(milliseconds: 500),
+      openBuilder: (context, _) => SearchView(color: widget.color),
       closedElevation: 0,
-      closedColor: widget.color, 
-      closedBuilder: (context, _) => const Icon(
-        Icons.add_rounded,
-        color: Constants.textColor,
-        size: 36,
+      closedColor: widget.color,
+      closedShape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(36),
+        ),
+      ),
+      closedBuilder: (context, _) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(36),
+          color: widget.color,
+        ),
+        child: const Icon(
+          Icons.add_rounded,
+          color: Constants.textColor,
+          size: 36,
+        ),
       ),
     );
   }
