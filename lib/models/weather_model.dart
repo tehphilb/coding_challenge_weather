@@ -13,7 +13,7 @@ class WeatherModel {
   final int visibility;
   final String icon;
   final String description;
-  final List<Forecast> forecast; // Add this line
+  final List<Forecast> forecast;
 
   WeatherModel({
     required this.cityName,
@@ -27,7 +27,7 @@ class WeatherModel {
     required this.visibility,
     required this.icon,
     required this.description,
-    required this.forecast, // Add this
+    required this.forecast,
   });
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) {

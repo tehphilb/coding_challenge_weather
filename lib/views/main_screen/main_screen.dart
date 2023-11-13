@@ -14,9 +14,14 @@ class MainScreen extends ConsumerWidget {
 
   final BoxConstraints constraints;
 
+  Future<List<WeatherModel>> get weatherData async {
+    final coordinates = await addCoordinates();
+    final weatherData = await fetchWeatherForecasts(coordinates);
+    return weatherData;
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    Future<WeatherModel> weatherData = fetchWeatherForecast();
+  Widget build(BuildContext context, WidgetRef ref)  {
 
     return Scaffold(
       backgroundColor: Constants.textColor,

@@ -4,7 +4,9 @@ import 'package:coding_challenge_weather/views/search_view/search_view.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedSearchContainer extends StatefulWidget {
-  const AnimatedSearchContainer({super.key});
+  const AnimatedSearchContainer({super.key, required this.color});
+
+  final Color color;
 
   @override
   State<AnimatedSearchContainer> createState() =>
@@ -22,8 +24,7 @@ class _AnimatedSearchContainerState extends State<AnimatedSearchContainer> {
       transitionDuration: const Duration(milliseconds: 600),
       openBuilder: (context, _) => const SearchView(),
       closedElevation: 0,
-      closedColor:
-          Constants.transparent, //TODO: ugly UI side effect need to fix
+      closedColor: widget.color, 
       closedBuilder: (context, _) => const Icon(
         Icons.add_rounded,
         color: Constants.textColor,

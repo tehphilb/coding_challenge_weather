@@ -9,19 +9,34 @@ class IsarService {
     db = openDB();
   }
 
-  Future<void> saveName(CityNameIsar newCity) async {
+  Future<void> saveName(City newCity) async {
     final isar = await db;
-    isar.writeTxnSync<int>(() => isar.cityNameIsars.putSync(newCity));
+
+    await isar.writeTxn(
+      () async {
+        final existingCities = await isar.citys
+            .filter()
+            .nameEqualTo(newCity.name)
+            .and()
+            .stateEqualTo(newCity.state)
+            .and()
+            .countryEqualTo(newCity.country)
+            .findAll();
+        if (existingCities.isEmpty) {
+          await isar.citys.put(newCity);
+        }
+      },
+    );
   }
 
-  Future<void> deleteName(CityNameIsar city) async {
+  Future<void> deleteName(City city) async {
     final isar = await db;
-    isar.writeTxnSync(() async => await isar.cityNameIsars.delete(city.id));
+    isar.writeTxnSync(() async => await isar.citys.delete(city.id));
   }
 
-  Future<List<CityNameIsar>> getAllCityNames() async {
+  Future<List<City>> getAllCities() async {
     final isar = await db;
-    return await isar.cityNameIsars.where().findAll();
+    return await isar.citys.where().findAll();
   }
 
   Future<void> cleanDb() async {
@@ -33,7 +48,7 @@ class IsarService {
     final dir = await getApplicationDocumentsDirectory();
     if (Isar.instanceNames.isEmpty) {
       return await Isar.open(
-        [CityNameIsarSchema],
+        [CitySchema],
         directory: dir.path,
         inspector: true,
       );

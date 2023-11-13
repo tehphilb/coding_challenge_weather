@@ -15,14 +15,20 @@ class CarouselView extends ConsumerStatefulWidget {
     required this.data,
   });
 
-  final WeatherModel data;
+  final List<WeatherModel> data;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _CarouselViewState();
 }
 
 class _CarouselViewState extends ConsumerState<CarouselView> {
-  final List<Color> colors = Constants.colors;
+  late List<Color> colors;
+
+  @override
+  void initState() {
+    super.initState();
+    colors = Constants.colors.take(widget.data.length).toList();
+  }
 
   final bool isPlaying = false;
   GlobalKey sliderKey = GlobalKey();
@@ -39,9 +45,9 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
           appBar: AppBar(
             elevation: 0.0,
             backgroundColor: colors[colorIndex],
-            leading: AnimatedSearchContainer(),
+            leading: AnimatedSearchContainer(color: colors[colorIndex]),
             title: Text(
-              widget.data.cityName,
+              widget.data[colorIndex].cityName,
               style: GoogleFonts.inter(
                 color: Constants.textColor,
                 fontSize: 24,
@@ -60,33 +66,30 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
                 child: Column(
                   children: [
                     DateView(
-                      data: widget.data,
-                      colors: colors,
-                      index: colorIndex,
+                      data: widget.data[colorIndex],
+                      color: colors[colorIndex],
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         DescriptionView(
-                          data: widget.data,
+                          data: widget.data[colorIndex],
                         ),
                         TemperatureView(
-                          data: widget.data,
+                          data: widget.data[colorIndex],
                         ),
                         SummaryView(
-                          data: widget.data,
+                          data: widget.data[colorIndex],
                         ),
                       ],
                     ),
                     BlackCardView(
-                      data: widget.data,
-                      colors: colors,
-                      index: colorIndex,
+                      data: widget.data[colorIndex],
+                      color: colors[colorIndex],
                     ),
                     ForecastView(
-                      data: widget.data,
-                      colors: colors,
-                      colorIndex: colorIndex,
+                      data: widget.data[colorIndex],
+                      color: colors[colorIndex],
                     ),
                   ],
                 ),
@@ -109,13 +112,11 @@ class ForecastView extends ConsumerWidget {
   const ForecastView({
     super.key,
     required this.data,
-    required this.colors,
-    required this.colorIndex,
+    required this.color,
   });
 
   final WeatherModel data;
-  final List<Color> colors;
-  final int colorIndex;
+  final Color color;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -323,13 +324,11 @@ class BlackCardView extends ConsumerWidget {
   const BlackCardView({
     super.key,
     required this.data,
-    required this.colors,
-    required this.index,
+    required this.color,
   });
 
   final WeatherModel data;
-  final List<Color> colors;
-  final int index;
+  final Color color;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -348,14 +347,14 @@ class BlackCardView extends ConsumerWidget {
                 children: [
                   Icon(
                     Icons.air_outlined,
-                    color: colors[index],
+                    color: color,
                     size: 36,
                   ),
                   SizedBox(height: Constants.lagrePadding),
                   Text(
                     '${data.windSpeed} km/h',
                     style: TextStyle(
-                      color: colors[index],
+                      color: color,
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                     ),
@@ -363,7 +362,7 @@ class BlackCardView extends ConsumerWidget {
                   Text(
                     'Wind',
                     style: TextStyle(
-                      color: colors[index],
+                      color: color,
                       fontSize: 10.0,
                       fontWeight: FontWeight.w400,
                     ),
@@ -376,14 +375,14 @@ class BlackCardView extends ConsumerWidget {
                 children: [
                   Icon(
                     Icons.water_drop_outlined,
-                    color: colors[index],
+                    color: color,
                     size: 36,
                   ),
                   SizedBox(height: Constants.lagrePadding),
                   Text(
                     '${data.humidity}%',
                     style: TextStyle(
-                      color: colors[index],
+                      color: color,
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                     ),
@@ -391,7 +390,7 @@ class BlackCardView extends ConsumerWidget {
                   Text(
                     'Humidity',
                     style: TextStyle(
-                      color: colors[index],
+                      color: color,
                       fontSize: 10.0,
                       fontWeight: FontWeight.w400,
                     ),
@@ -404,14 +403,14 @@ class BlackCardView extends ConsumerWidget {
                 children: [
                   Icon(
                     Icons.visibility_outlined,
-                    color: colors[index],
+                    color: color,
                     size: 36,
                   ),
                   SizedBox(height: Constants.lagrePadding),
                   Text(
                     '${data.visibility} km',
                     style: TextStyle(
-                      color: colors[index],
+                      color: color,
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
                     ),
@@ -419,7 +418,7 @@ class BlackCardView extends ConsumerWidget {
                   Text(
                     'Visibility',
                     style: TextStyle(
-                      color: colors[index],
+                      color: color,
                       fontSize: 10.0,
                       fontWeight: FontWeight.w400,
                     ),
@@ -436,13 +435,11 @@ class DateView extends ConsumerWidget {
   const DateView({
     super.key,
     required this.data,
-    required this.colors,
-    required this.index,
+    required this.color,
   });
 
   final WeatherModel data;
-  final List<Color> colors;
-  final int index;
+  final Color color;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -462,7 +459,7 @@ class DateView extends ConsumerWidget {
             child: Text(
               data.formattedDate,
               style: GoogleFonts.inter(
-                color: colors[index],
+                color: color,
                 fontSize: 12.0,
                 fontWeight: FontWeight.w400,
               ),

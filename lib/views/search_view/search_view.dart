@@ -63,7 +63,7 @@ class _SearchViewState extends State<SearchView> {
 
   void saveExit(CityName suggestion) {
     service.saveName(
-      CityNameIsar()
+      City()
         ..name = suggestion.name
         ..latitude = suggestion.latitude
         ..longitude = suggestion.longitude
