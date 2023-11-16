@@ -9,7 +9,7 @@ environment:
   sdk: '>=3.1.5 <4.0.0'
 
 dependencies:
-  animated_hint_textfield: ^1.0.1
+  animation_search_bar: ^0.0.10
   animations: ^2.0.8
   cupertino_icons: ^1.0.2
   flutter:

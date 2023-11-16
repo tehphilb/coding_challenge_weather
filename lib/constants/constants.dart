@@ -9,6 +9,7 @@ class Constants {
   static const Color fifthBackgroundColor = Color.fromARGB(255, 255, 100, 123);
   static const Color textColor = Color(0xff212427);
   static const Color appWhite = Color(0xffFFF7EA);
+  static const Color searchScreenWhite = Color(0xffe5decf);
   static const Color transparent = Colors.transparent;
 
   static const List<Color> colors = [

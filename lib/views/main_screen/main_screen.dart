@@ -1,11 +1,9 @@
-import 'package:coding_challenge_weather/services/provider/weather_data_provider.dart';
-import 'package:coding_challenge_weather/views/main_screen/carousel_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:coding_challenge_weather/models/weather_model.dart';
-import 'package:coding_challenge_weather/services/api/weather_api.dart';
 import 'package:coding_challenge_weather/constants/constants.dart';
+import 'package:coding_challenge_weather/services/provider/weather_data_provider.dart';
+import 'package:coding_challenge_weather/views/main_screen/carousel_view.dart';
 
 class MainScreen extends ConsumerWidget {
   const MainScreen({
@@ -14,12 +12,6 @@ class MainScreen extends ConsumerWidget {
   });
 
   final BoxConstraints constraints;
-
-  // Future<List<WeatherModel>> get weatherData async {
-  //   final coordinates = await addCoordinates();
-  //   final weatherData = await fetchWeatherForecasts(coordinates);
-  //   return weatherData;
-  // }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

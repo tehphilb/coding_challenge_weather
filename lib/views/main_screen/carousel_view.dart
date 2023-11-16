@@ -46,24 +46,9 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
           appBar: AppBar(
             elevation: 0.0,
             backgroundColor: colors[colorIndex],
-            leading: (colorIndex == 0)
+            leading: colorIndex == 0
                 ? AnimatedSearchContainer(color: colors[colorIndex])
-                : IconButton(
-                    splashColor: Constants.transparent,
-                    onPressed: () async {
-                      await isarService
-                          .deleteName(widget.data[colorIndex].cityName);
-                      setState(() {
-                        widget.data.removeAt(colorIndex);
-                        colors.removeAt(colorIndex);
-                      });
-                    },
-                    icon: Icon(
-                      Icons.clear_rounded,
-                      color: Constants.textColor,
-                      size: 36,
-                    ),
-                  ),
+                : null, // If colorIndex is not 0, no leading widget is shown
             title: Text(
               widget.data[colorIndex].cityName,
               style: GoogleFonts.inter(
@@ -73,6 +58,26 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
                 letterSpacing: -0.3,
               ),
             ),
+            actions: colorIndex != 0
+                ? [
+                    IconButton(
+                      splashColor: Constants.transparent,
+                      onPressed: () async {
+                        await isarService
+                            .deleteName(widget.data[colorIndex].cityName);
+                        setState(() {
+                          widget.data.removeAt(colorIndex);
+                          colors.removeAt(colorIndex);
+                        });
+                      },
+                      icon: Icon(
+                        Icons.delete_outline_rounded,
+                        color: Constants.textColor,
+                        size: 36,
+                      ),
+                    ),
+                  ]
+                : null, // If colorIndex is 0, no actions are added
           ),
           body: SingleChildScrollView(
             child: Container(
@@ -87,19 +92,14 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
                       data: widget.data[colorIndex],
                       color: colors[colorIndex],
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        DescriptionView(
-                          data: widget.data[colorIndex],
-                        ),
-                        TemperatureView(
-                          data: widget.data[colorIndex],
-                        ),
-                        SummaryView(
-                          data: widget.data[colorIndex],
-                        ),
-                      ],
+                    DescriptionView(
+                      data: widget.data[colorIndex],
+                    ),
+                    TemperatureView(
+                      data: widget.data[colorIndex],
+                    ),
+                    SummaryView(
+                      data: widget.data[colorIndex],
                     ),
                     BlackCardView(
                       data: widget.data[colorIndex],
@@ -177,7 +177,6 @@ class ForecastView extends ConsumerWidget {
             scrollDirection: Axis.horizontal,
             itemCount: data.forecast.length > 8 ? 8 : data.forecast.length,
             itemBuilder: (context, index) {
-              debugPrint('data: ${data.forecast[index].temperature}');
               return Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Container(
@@ -264,7 +263,7 @@ class TemperatureView extends ConsumerWidget {
     return Align(
       alignment: Alignment.center,
       child: SizedBox(
-        height: 200.0,
+        height: 180.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,7 +276,7 @@ class TemperatureView extends ConsumerWidget {
                   leadingDistribution: TextLeadingDistribution.even),
               style: GoogleFonts.inter(
                 color: Constants.textColor,
-                fontSize: 170.0,
+                fontSize: 150.0,
                 letterSpacing: -1.0,
                 fontWeight: FontWeight.w400,
               ),
@@ -286,7 +285,7 @@ class TemperatureView extends ConsumerWidget {
               '°',
               style: GoogleFonts.inter(
                 color: Constants.textColor,
-                fontSize: 120.0,
+                fontSize: 100.0,
                 fontWeight: FontWeight.w500,
               ),
             ).animate().moveX().fadeIn(),
