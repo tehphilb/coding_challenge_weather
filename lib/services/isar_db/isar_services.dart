@@ -29,14 +29,30 @@ class IsarService {
     );
   }
 
-  Future<void> deleteName(City city) async {
+  Future<void> deleteName(String cityName) async {
     final isar = await db;
-    isar.writeTxnSync(() async => await isar.citys.delete(city.id));
+    await isar.writeTxn(() async {
+      final citiesToDelete =
+          await isar.citys.filter().nameEqualTo(cityName).findAll();
+
+      // Delete all cities that match the query
+      for (var city in citiesToDelete) {
+        await isar.citys.delete(city.id);
+      }
+    });
   }
 
   Future<List<City>> getAllCities() async {
     final isar = await db;
     return await isar.citys.where().findAll();
+  }
+
+  void listenToCityChanges(Isar isar) {
+    Stream<void> cityChanged = isar.citys.watchLazy();
+
+    cityChanged.listen((_) {
+      print('A User changed');
+    });
   }
 
   Future<void> cleanDb() async {

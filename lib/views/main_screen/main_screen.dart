@@ -1,3 +1,4 @@
+import 'package:coding_challenge_weather/services/provider/weather_data_provider.dart';
 import 'package:coding_challenge_weather/views/main_screen/carousel_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,31 +15,21 @@ class MainScreen extends ConsumerWidget {
 
   final BoxConstraints constraints;
 
-  Future<List<WeatherModel>> get weatherData async {
-    final coordinates = await addCoordinates();
-    final weatherData = await fetchWeatherForecasts(coordinates);
-    return weatherData;
-  }
+  // Future<List<WeatherModel>> get weatherData async {
+  //   final coordinates = await addCoordinates();
+  //   final weatherData = await fetchWeatherForecasts(coordinates);
+  //   return weatherData;
+  // }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref)  {
-
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weatherDataAsyncValue = ref.watch(weatherProvider);
     return Scaffold(
       backgroundColor: Constants.textColor,
-      body: FutureBuilder(
-        future: weatherData,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final data = snapshot.data!;
-            return CarouselView(data: data);
-          } else if (snapshot.hasError) {
-            return const Center(
-              child: Text('Error'),
-            );
-          } else {
-            return const LoadingIndicator();
-          }
-        },
+      body: weatherDataAsyncValue.when(
+        data: (data) => CarouselView(data: data),
+        loading: () => const LoadingIndicator(),
+        error: (e, _) => Center(child: Text('Error: $e')),
       ),
     );
   }
@@ -56,10 +47,17 @@ class LoadingIndicator extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            color: Constants.textColor,
+            color: Constants.appWhite,
           ),
           SizedBox(height: 20),
-          Text('Loading your position...'),
+          Text(
+            'Loading your position...',
+            style: TextStyle(
+              color: Constants.appWhite,
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );

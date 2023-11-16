@@ -9,10 +9,12 @@ environment:
   sdk: '>=3.1.5 <4.0.0'
 
 dependencies:
+  animated_hint_textfield: ^1.0.1
   animations: ^2.0.8
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
+  flutter_animate: ^4.2.0+1
   flutter_carousel_slider: ^1.1.0
   flutter_riverpod: ^2.4.5
   geolocator: ^10.1.0

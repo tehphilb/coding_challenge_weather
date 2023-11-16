@@ -7,10 +7,33 @@ import 'package:coding_challenge_weather/models/city_names_model.dart';
 import 'package:coding_challenge_weather/models/isar_city_collection.dart';
 import 'package:coding_challenge_weather/services/api/city_names_api.dart';
 import 'package:coding_challenge_weather/services/isar_db/isar_services.dart';
+import 'package:coding_challenge_weather/services/provider/weather_data_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:isar/isar.dart';
 
-class SearchView extends StatefulWidget {
+// class SearchView
+//  extends ConsumerStatefulWidget {
+//   const SearchView
+//   ({super.key});
+
+//   @override
+//   ConsumerState<ConsumerStatefulWidget> createState() => _SearchView
+//   State();
+// }
+
+// class _SearchView
+// State extends ConsumerState<SearchView
+// > {
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container();
+//   }
+// }
+
+class SearchView extends ConsumerStatefulWidget {
   const SearchView({
     super.key,
     required this.color,
@@ -19,15 +42,15 @@ class SearchView extends StatefulWidget {
   final Color color;
 
   @override
-  State<SearchView> createState() => _SearchViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SearchViewState();
 }
 
-class _SearchViewState extends State<SearchView> {
-  final service = IsarService();
+class _SearchViewState extends ConsumerState<SearchView> {
+  final isarService = IsarService();
   final geocodingService = CityNamesApi();
   final controller = TextEditingController();
 
-  Timer? _debounce;
+  Timer? debounce;
   List<CityName> nameSuggestions = [];
 
   @override
@@ -40,13 +63,13 @@ class _SearchViewState extends State<SearchView> {
   void dispose() {
     controller.removeListener(onSearchChanged);
     controller.dispose();
-    _debounce?.cancel();
+    debounce?.cancel();
     super.dispose();
   }
 
   void onSearchChanged() {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(
+    if (debounce?.isActive ?? false) debounce!.cancel();
+    debounce = Timer(
       const Duration(milliseconds: 500),
       () {
         if (controller.text.isEmpty) {
@@ -64,16 +87,34 @@ class _SearchViewState extends State<SearchView> {
     );
   }
 
-  void saveExit(CityName suggestion) {
-    service.saveName(
-      City()
-        ..name = suggestion.name
-        ..latitude = suggestion.latitude
-        ..longitude = suggestion.longitude
-        ..country = suggestion.country
-        ..state = suggestion.state,
-    );
-    Navigator.pop(context);
+  // void listenToCityChanges(Isar isar, WidgetRef ref) {
+  //   Stream<void> cityChanged = isar.citys.watchLazy();
+
+  //   cityChanged.listen((_) {
+  //     // Refresh the provider to fetch new weather data
+  //     ref.read(weatherProvider);
+  //     print('Post added');
+  //   });
+  // }
+
+  void saveToIsar(CityName suggestion, WidgetRef ref) async {
+    try {
+      await isarService.saveName(
+        City()
+          ..name = suggestion.name
+          ..latitude = suggestion.latitude
+          ..longitude = suggestion.longitude
+          ..country = suggestion.country
+          ..state = suggestion.state,
+      );
+
+      // Refresh the weather data provider after the city is successfully saved
+      ref.refresh(weatherProvider);
+      print('City added and provider refreshed');
+    } catch (e) {
+      // Handle any errors here
+      print('Error adding city: $e');
+    }
   }
 
   @override
@@ -169,7 +210,10 @@ class _SearchViewState extends State<SearchView> {
                     ),
                     trailing: IconButton(
                       splashColor: Constants.transparent,
-                      onPressed: (() => saveExit(suggestion)),
+                      onPressed: () {
+                        saveToIsar(suggestion, ref);
+                        Navigator.pop(context);
+                      },
                       icon: Icon(
                         Icons.add_rounded,
                         color: Constants.appWhite,

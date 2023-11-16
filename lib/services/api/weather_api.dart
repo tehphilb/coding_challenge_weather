@@ -22,27 +22,6 @@ Future<List<List<double>>> addCoordinates() async {
   return listOfCoordinates;
 }
 
-// Future<WeatherModel> fetchWeatherForecast() async {
-
-//   addCoordinates();
-
-//   final url = Uri.parse(
-//       'https://api.openweathermap.org/data/2.5/forecast?lat=${position.latitude}&lon=${position.longitude}&units=metric&appid=$weatherApiKey');
-
-//   try {
-//     final response = await http.get(url);
-
-//     if (response.statusCode == 200) {
-//       final json = jsonDecode(response.body);
-//       return WeatherModel.fromJson(json);
-//     } else {
-//       throw Exception('Failed to load weather forecast');
-//     }
-//   } catch (e) {
-//     throw Exception('Failed to load weather forecast: $e');
-//   }
-// }
-
 Future<List<WeatherModel>> fetchWeatherForecasts(
     List<List<double>> listOfCoordinates) async {
   // This will hold all the WeatherModel futures.
@@ -52,11 +31,9 @@ Future<List<WeatherModel>> fetchWeatherForecasts(
     final latitude = coordinates[0];
     final longitude = coordinates[1];
 
-    // Construct the API call for each set of coordinates.
     final url = Uri.parse(
         'https://api.openweathermap.org/data/2.5/forecast?lat=$latitude&lon=$longitude&units=metric&appid=$weatherApiKey');
 
-    // Add the http.get call to the list of futures.
     forecastFutures.add(http.get(url).then((response) {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);

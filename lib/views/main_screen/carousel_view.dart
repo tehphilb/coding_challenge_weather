@@ -1,9 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:coding_challenge_weather/constants/constants.dart';
+import 'package:coding_challenge_weather/models/isar_city_collection.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
+import 'package:coding_challenge_weather/services/isar_db/isar_services.dart';
+import 'package:coding_challenge_weather/services/provider/weather_data_provider.dart';
 import 'package:coding_challenge_weather/views/search_view/animated_search_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_carousel_slider/carousel_slider.dart';
@@ -22,13 +26,8 @@ class CarouselView extends ConsumerStatefulWidget {
 }
 
 class _CarouselViewState extends ConsumerState<CarouselView> {
-  late List<Color> colors;
-
-  @override
-  void initState() {
-    super.initState();
-    colors = Constants.colors.take(widget.data.length).toList();
-  }
+  IsarService isarService = IsarService();
+  City city = City();
 
   final bool isPlaying = false;
   GlobalKey sliderKey = GlobalKey();
@@ -36,16 +35,35 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
 
   @override
   Widget build(BuildContext context) {
+    List<Color> colors = ref.watch(colorListProvider(widget.data));
+
     return CarouselSlider.builder(
-      key: sliderKey,
-      unlimitedMode: true,
+      // key: sliderKey,
+      unlimitedMode: false,
       slideBuilder: (colorIndex) {
         return Scaffold(
           backgroundColor: colors[colorIndex],
           appBar: AppBar(
             elevation: 0.0,
             backgroundColor: colors[colorIndex],
-            leading: AnimatedSearchContainer(color: colors[colorIndex]),
+            leading: (colorIndex == 0)
+                ? AnimatedSearchContainer(color: colors[colorIndex])
+                : IconButton(
+                    splashColor: Constants.transparent,
+                    onPressed: () async {
+                      await isarService
+                          .deleteName(widget.data[colorIndex].cityName);
+                      setState(() {
+                        widget.data.removeAt(colorIndex);
+                        colors.removeAt(colorIndex);
+                      });
+                    },
+                    icon: Icon(
+                      Icons.clear_rounded,
+                      color: Constants.textColor,
+                      size: 36,
+                    ),
+                  ),
             title: Text(
               widget.data[colorIndex].cityName,
               style: GoogleFonts.inter(
@@ -263,7 +281,7 @@ class TemperatureView extends ConsumerWidget {
                 letterSpacing: -1.0,
                 fontWeight: FontWeight.w400,
               ),
-            ),
+            ).animate().moveY().fadeIn(),
             Text(
               '°',
               style: GoogleFonts.inter(
@@ -271,7 +289,7 @@ class TemperatureView extends ConsumerWidget {
                 fontSize: 120.0,
                 fontWeight: FontWeight.w500,
               ),
-            ),
+            ).animate().moveX().fadeIn(),
           ],
         ),
       ),
