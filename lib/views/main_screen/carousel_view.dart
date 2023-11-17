@@ -5,6 +5,7 @@ import 'package:coding_challenge_weather/models/isar_city_collection.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
 import 'package:coding_challenge_weather/services/isar_db/isar_services.dart';
 import 'package:coding_challenge_weather/services/provider/weather_data_provider.dart';
+import 'package:coding_challenge_weather/views/main_screen/daily_forecast_view.dart';
 import 'package:coding_challenge_weather/views/search_view/animated_search_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -105,7 +106,7 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
                       data: widget.data[colorIndex],
                       color: colors[colorIndex],
                     ),
-                    ForecastView(
+                    DailyForecastView(
                       data: widget.data[colorIndex],
                       color: colors[colorIndex],
                     ),
@@ -122,106 +123,6 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
             const EdgeInsets.only(bottom: Constants.extraExtraLargePadding),
       ),
       itemCount: colors.length,
-    );
-  }
-}
-
-class ForecastView extends ConsumerWidget {
-  const ForecastView({
-    super.key,
-    required this.data,
-    required this.color,
-  });
-
-  final WeatherModel data;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: Constants.extraExtraLargePadding),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Weekly forecast',
-              textHeightBehavior: const TextHeightBehavior(
-                  applyHeightToLastDescent: true,
-                  applyHeightToFirstAscent: false,
-                  leadingDistribution: TextLeadingDistribution.even),
-              style: GoogleFonts.inter(
-                color: Constants.textColor,
-                fontSize: 16.0,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            IconButton(
-              splashColor: Constants.transparent,
-              onPressed: () {
-                //print('pressed arrow');
-              },
-              icon: Icon(
-                Icons.arrow_circle_right_rounded,
-                color: Constants.textColor,
-                size: 36,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: Constants.extraLargePadding),
-        SizedBox(
-          height: 120,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: data.forecast.length > 8 ? 8 : data.forecast.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Container(
-                  width: 80,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Constants.textColor),
-                    // color: Constants.textColor,
-                    borderRadius:
-                        BorderRadius.circular(Constants.extraLargePadding),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(height: Constants.lagrePadding),
-                      Text(
-                        '${data.forecast[index].temperature}°',
-                        style: GoogleFonts.inter(
-                          color: Constants.textColor,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Image.network(
-                        'https://openweathermap.org/img/wn/${data.forecast[index].icon}.png',
-                        width: 36,
-                        color: Constants.textColor,
-                      ),
-                      Text(
-                        '${data.forecast[index].formattedDate}\n${data.forecast[index].formattedTime}',
-                        style: GoogleFonts.inter(
-                          color: Constants.textColor,
-                          fontSize: 10.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: Constants.normalPadding),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-        SizedBox(height: Constants.extraExtraExtraLargePadding),
-      ],
     );
   }
 }
@@ -260,6 +161,9 @@ class TemperatureView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final Duration animationDuration = Duration(milliseconds: 1000);
+    final Duration animationDelay = Duration(milliseconds: 300);
+
     return Align(
       alignment: Alignment.center,
       child: SizedBox(
@@ -280,7 +184,11 @@ class TemperatureView extends ConsumerWidget {
                 letterSpacing: -1.0,
                 fontWeight: FontWeight.w400,
               ),
-            ).animate().moveY().fadeIn(),
+            ).animate().fadeIn(duration: animationDuration).moveY(
+                  delay: animationDelay,
+                  duration: Duration(milliseconds: 200),
+                  begin: 20,
+                ),
             Text(
               '°',
               style: GoogleFonts.inter(
@@ -288,7 +196,20 @@ class TemperatureView extends ConsumerWidget {
                 fontSize: 100.0,
                 fontWeight: FontWeight.w500,
               ),
-            ).animate().moveX().fadeIn(),
+            )
+                .animate()
+                .fadeIn(duration: animationDuration)
+                .moveY(
+                  delay: animationDelay,
+                  duration: Duration(milliseconds: 200),
+                  begin: 10,
+                )
+                .then()
+                .fadeIn(duration: animationDuration)
+                .moveX(
+                  duration: Duration(milliseconds: 500),
+                  begin: -40,
+                ),
           ],
         ),
       ),
@@ -307,7 +228,7 @@ class SummaryView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           'Daily Summary',
@@ -350,101 +271,113 @@ class BlackCardView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-        decoration: BoxDecoration(
-          color: Constants.textColor,
-          borderRadius: BorderRadius.circular(Constants.extraLargePadding),
+      decoration: BoxDecoration(
+        color: Constants.textColor,
+        borderRadius: BorderRadius.circular(Constants.extraLargePadding),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(Constants.extraExtraLargePadding),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(
+                  Icons.air_outlined,
+                  color: color,
+                  size: 36,
+                ),
+                SizedBox(height: Constants.lagrePadding),
+                Text(
+                  '${data.windSpeed} km/h',
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Wind',
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 10.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: Constants.lagrePadding),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(
+                  Icons.water_drop_outlined,
+                  color: color,
+                  size: 36,
+                ),
+                SizedBox(height: Constants.lagrePadding),
+                Text(
+                  '${data.humidity}%',
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Humidity',
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 10.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: Constants.lagrePadding),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(
+                  Icons.visibility_outlined,
+                  color: color,
+                  size: 36,
+                ),
+                SizedBox(height: Constants.lagrePadding),
+                Text(
+                  '${data.visibility} km',
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Visibility',
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 10.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(Constants.extraExtraLargePadding),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.air_outlined,
-                    color: color,
-                    size: 36,
-                  ),
-                  SizedBox(height: Constants.lagrePadding),
-                  Text(
-                    '${data.windSpeed} km/h',
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Wind',
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 10.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: Constants.lagrePadding),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.water_drop_outlined,
-                    color: color,
-                    size: 36,
-                  ),
-                  SizedBox(height: Constants.lagrePadding),
-                  Text(
-                    '${data.humidity}%',
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Humidity',
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 10.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: Constants.lagrePadding),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.visibility_outlined,
-                    color: color,
-                    size: 36,
-                  ),
-                  SizedBox(height: Constants.lagrePadding),
-                  Text(
-                    '${data.visibility} km',
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Visibility',
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 10.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ));
+      ).animate().shimmer(
+          curve: Curves.fastOutSlowIn,
+          delay: Duration(milliseconds: 500),
+          duration: Duration(milliseconds: 1500),
+          // color: Colors.white
+          colors: [
+            color,
+            Colors.grey[200]!,
+            Colors.white,
+            Colors.grey[200]!,
+            color,
+          ]),
+    );
   }
 }
 

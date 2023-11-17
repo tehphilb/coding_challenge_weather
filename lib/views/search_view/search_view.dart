@@ -2,14 +2,15 @@
 
 import 'dart:async';
 
-import 'package:animation_search_bar/animation_search_bar.dart';
 import 'package:coding_challenge_weather/constants/constants.dart';
 import 'package:coding_challenge_weather/models/city_names_model.dart';
 import 'package:coding_challenge_weather/models/isar_city_collection.dart';
 import 'package:coding_challenge_weather/services/api/city_names_api.dart';
 import 'package:coding_challenge_weather/services/isar_db/isar_services.dart';
 import 'package:coding_challenge_weather/services/provider/weather_data_provider.dart';
+import 'package:coding_challenge_weather/views/search_view/confetti_effect.dart';
 import 'package:coding_challenge_weather/views/search_view/search_field.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -93,13 +94,6 @@ class _SearchViewState extends ConsumerState<SearchView> {
         child: SafeArea(
           child: Container(
             color: Constants.searchScreenWhite,
-            // decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-            //   BoxShadow(
-            //       color: Colors.black26,
-            //       blurRadius: 5,
-            //       spreadRadius: 0,
-            //       offset: Offset(0, 5))
-            // ]),
             alignment: Alignment.center,
             child: SearchField(
                 searchFieldHeight: 40,
@@ -118,111 +112,45 @@ class _SearchViewState extends ConsumerState<SearchView> {
           ),
         ),
       ),
-
-      // AppBar(
-      //   backgroundColor: Constants.searchScreenWhite,
-      //   elevation: 0,
-      //   leading: IconButton(
-      //     color: Constants.textColor,
-      //     splashRadius: 1,
-      //     splashColor: Constants.transparent,
-      //     onPressed: () {
-      //       Navigator.pop(context);
-      //     },
-      //     icon: Icon(
-      //       Icons.arrow_back_rounded,
-      //       color: Constants.textColor,
-      //       size: 36,
-      //     ),
-      //   ),
-      //   title: Text(
-      //     'Search',
-      //     style: GoogleFonts.inter(
-      //       color: Constants.textColor,
-      //       fontSize: 24,
-      //       fontWeight: FontWeight.w900,
-      //       letterSpacing: -0.3,
-      //     ),
-      //   ),
-      // ),
-      body: Container(
-        color: Constants.searchScreenWhite,
-        child:
-            // Padding(
-            //   padding: EdgeInsets.symmetric(
-            //     horizontal: Constants.extraExtraExtraLargePadding,
-            //   ),
-            //   child: Column(
-            //     children: [
-            //       SizedBox(
-            //         height: Constants.extraExtraLargePadding,
-            //       ),
-            //       SizedBox(
-            //         height: 48,
-            //         width: 300,
-            //         child: TextField(
-            //           controller: controller,
-            //           style: GoogleFonts.inter(
-            //             color: Constants.textColor,
-            //             fontSize: 20,
-            //             fontWeight: FontWeight.w500,
-            //           ),
-            //           decoration: InputDecoration(
-            //             suffix: Icon(
-            //               Icons.search_rounded,
-            //               color: Constants.textColor,
-            //               size: 36,
-            //             ),
-            //             focusColor: Constants.textColor,
-            //             filled: true,
-            //             fillColor: Constants.searchScreenWhite,
-            //             hintText: 'Search for a city to add',
-            //             hintStyle: GoogleFonts.inter(
-            //               color: Constants.textColor.withOpacity(0.8),
-            //               fontSize: 18,
-            //               fontWeight: FontWeight.w700,
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            Expanded(
-          child: ListView.builder(
-            itemCount: nameSuggestions.length,
-            itemBuilder: (context, index) {
-              final suggestion = nameSuggestions[index];
-              return ListTile(
-                // splashColor: Constants.transparent,
-                // onLongPress: () => saveExit(suggestion),
-                title: Text(
-                  suggestion.name,
-                  style: GoogleFonts.inter(
-                    color: Constants.textColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Constants.extraExtraLargePadding,
+        ),
+        child: Container(
+          color: Constants.searchScreenWhite,
+          child: Expanded(
+            child: ListView.builder(
+              itemCount: nameSuggestions.length,
+              itemBuilder: (context, index) {
+                final suggestion = nameSuggestions[index];
+                return Container(
+                  margin: const EdgeInsets.symmetric(
+                      vertical: 4.0, horizontal: 12.0),
+                  child: ListTile(
+                    onTap: () {
+                      saveToIsar(suggestion, ref);
+                      Navigator.pop(context);
+                    },
+                    title: Text(
+                      suggestion.name,
+                      style: GoogleFonts.inter(
+                        color: Constants.textColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${suggestion.state}, ${suggestion.country}',
+                      style: GoogleFonts.inter(
+                        color: Constants.textColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                   ),
-                ),
-                subtitle: Text(
-                  '${suggestion.state}, ${suggestion.country}',
-                  style: GoogleFonts.inter(
-                    color: Constants.textColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                trailing: IconButton(
-                  splashColor: Constants.transparent,
-                  onPressed: () {
-                    saveToIsar(suggestion, ref);
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.add_rounded,
-                    color: Constants.textColor,
-                    size: 20,
-                  ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),

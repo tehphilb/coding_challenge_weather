@@ -3,6 +3,7 @@
 import 'package:coding_challenge_weather/constants/constants.dart';
 import 'package:flutter/cupertino.dart' show CupertinoPageRoute;
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'
     show ProviderScope, StateProvider, Consumer;
 import 'package:google_fonts/google_fonts.dart';
@@ -147,7 +148,7 @@ class SearchField extends StatelessWidget {
                             child: Icon(Icons.close_rounded,
                                 color: closeIconColor ??
                                     Constants.textColor.withOpacity(.7))),
-                        onPressed: () {
+                        onTap: () {
                           _searchNotifier.state = false;
                           searchTextEditingController.clear();
                         },
@@ -218,17 +219,38 @@ class SearchField extends StatelessWidget {
                   child: AnimatedContainer(
                     curve: Curves.easeInOutCirc,
                     duration: _duration,
-                    width: _isSearching ? 0 : 40,
-                    height: _isSearching ? 0 : 40,
-                    child: FittedBox(
+                    width: _isSearching ? 0 : 44,
+                    height: _isSearching ? 0 : 44,
+                    child: Flexible(
                       child: KCustomButton(
-                          widget: Icon(Icons.search,
-                              size: 36,
-                              color: searchIconColor ?? Constants.textColor),
-                          onPressed: () => _searchNotifier.state = true),
+                        widget: InkWell(
+                          radius: 50,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Constants.textColor.withOpacity(1),
+                                    width: .8),
+                                color:
+                                    Constants.searchScreenWhite.withOpacity(.8),
+                                borderRadius: BorderRadius.circular(50)),
+                            child: Icon(Icons.search_rounded,
+                                size: 32,
+                                color: searchIconColor ?? Constants.textColor),
+                          )
+                              .animate()
+                              .shimmer(
+                                  color: Constants.primaryBackgroundColor
+                                      .withOpacity(0.7),
+                                  delay: const Duration(milliseconds: 700))
+                              .then()
+                              .shake(
+                                  duration: const Duration(milliseconds: 500)),
+                        ),
+                        onTap: () => _searchNotifier.state = true,
+                      ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -240,14 +262,14 @@ class SearchField extends StatelessWidget {
 
 class KCustomButton extends StatelessWidget {
   final Widget widget;
-  final VoidCallback onPressed;
+  final VoidCallback onTap;
   final VoidCallback? onLongPress;
   final double? radius;
 
   const KCustomButton(
       {Key? key,
       required this.widget,
-      required this.onPressed,
+      required this.onTap,
       this.radius,
       this.onLongPress})
       : super(key: key);
@@ -262,7 +284,7 @@ class KCustomButton extends StatelessWidget {
         child: InkWell(
           splashColor: Theme.of(context).primaryColor.withOpacity(.2),
           highlightColor: Theme.of(context).primaryColor.withOpacity(.05),
-          onTap: onPressed,
+          onTap: onTap,
           onLongPress: onLongPress,
           child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
