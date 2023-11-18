@@ -280,88 +280,25 @@ class BlackCardView extends ConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(
-                  Icons.air_outlined,
-                  color: color,
-                  size: 36,
-                ),
-                SizedBox(height: Constants.lagrePadding),
-                Text(
-                  '${data.windSpeed} km/h',
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Wind',
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 10.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
+            WeatherInfoColumn(
+              icon: Icons.air_outlined,
+              mainText: '${data.windSpeed} km/h',
+              subtitle: 'Wind',
+              color: color,
             ),
             SizedBox(height: Constants.lagrePadding),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(
-                  Icons.water_drop_outlined,
-                  color: color,
-                  size: 36,
-                ),
-                SizedBox(height: Constants.lagrePadding),
-                Text(
-                  '${data.humidity}%',
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Humidity',
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 10.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
+            WeatherInfoColumn(
+              icon: Icons.water_drop_outlined,
+              mainText: '${data.humidity}%',
+              subtitle: 'Humidity',
+              color: color,
             ),
             SizedBox(height: Constants.lagrePadding),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(
-                  Icons.visibility_outlined,
-                  color: color,
-                  size: 36,
-                ),
-                SizedBox(height: Constants.lagrePadding),
-                Text(
-                  '${data.visibility} km',
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Visibility',
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 10.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
+            WeatherInfoColumn(
+              icon: Icons.visibility_outlined,
+              mainText: '${data.visibility} km',
+              subtitle: 'Visibility',
+              color: color,
             ),
           ],
         ),
@@ -372,9 +309,9 @@ class BlackCardView extends ConsumerWidget {
           // color: Colors.white
           colors: [
             color,
-            Colors.grey[200]!,
+            Colors.grey[300]!,
             Colors.white,
-            Colors.grey[200]!,
+            Colors.grey[300]!,
             color,
           ]),
     );
@@ -417,6 +354,49 @@ class DateView extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class WeatherInfoColumn extends StatelessWidget {
+  final IconData icon;
+  final String mainText;
+  final String subtitle;
+  final Color color;
+
+  const WeatherInfoColumn({
+    Key? key,
+    required this.icon,
+    required this.mainText,
+    required this.subtitle,
+    required this.color,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Icon(icon, color: color, size: 36),
+        SizedBox(height: Constants.lagrePadding),
+        Text(
+          mainText,
+          style: TextStyle(
+            color: color,
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: Constants.lagrePadding),
+        Text(
+          subtitle,
+          style: TextStyle(
+            color: color,
+            fontSize: 10.0,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
     );
   }
 }

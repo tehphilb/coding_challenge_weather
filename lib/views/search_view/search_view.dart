@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:async';
 
 import 'package:coding_challenge_weather/constants/constants.dart';
@@ -109,7 +107,7 @@ class _SearchViewState extends ConsumerState<SearchView> {
                 ),
                 onChanged: (_) {},
                 searchTextEditingController: controller,
-                horizontalPadding: 5),
+                horizontalPadding: 4),
           ),
         ),
       ),

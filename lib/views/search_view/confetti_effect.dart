@@ -18,7 +18,7 @@ class ConfettiEffectState extends State<ConfettiEffect> {
   void initState() {
     super.initState();
     _controllerCenter =
-        ConfettiController(duration: const Duration(milliseconds: 500));
+        ConfettiController(duration: const Duration(milliseconds: 300));
     _controllerTopCenter =
         ConfettiController(duration: const Duration(milliseconds: 500));
     _controllerBottomCenter =

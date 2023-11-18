@@ -45,14 +45,15 @@ class WeatherModel {
     return WeatherModel(
       cityName: cityData['name'],
       formattedDate: formattedDate,
-      currentTemp: (currentWeatherData['main']['temp'] as double).round(),
+      currentTemp: (currentWeatherData['main']['temp'].toDouble()).round(),
       feelsLikeTemp:
-          (currentWeatherData['main']['feels_like'] as double).round(),
-      minTemp: (currentWeatherData['main']['temp_min'] as double).round(),
-      maxTemp: (currentWeatherData['main']['temp_max'] as double).round(),
-      windSpeed: (currentWeatherData['wind']['speed'] as double).round(),
+          (currentWeatherData['main']['feels_like'].toDouble()).round(),
+      minTemp: (currentWeatherData['main']['temp_min'].toDouble()).round(),
+      maxTemp: (currentWeatherData['main']['temp_max'].toDouble()).round(),
+      windSpeed: (currentWeatherData['wind']['speed'].toDouble()).round(),
       humidity: currentWeatherData['main']['humidity'],
-      visibility: ((currentWeatherData['visibility'] / 1000) as double).round(),
+      visibility:
+          ((currentWeatherData['visibility'] / 1000).toDouble()).round(),
       icon: currentWeatherData['weather'][0]['icon'],
       description: currentWeatherData['weather'][0]['description'],
       forecast: forecastList, // Assign the forecast list here

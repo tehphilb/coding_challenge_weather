@@ -221,33 +221,30 @@ class SearchField extends StatelessWidget {
                     duration: _duration,
                     width: _isSearching ? 0 : 44,
                     height: _isSearching ? 0 : 44,
-                    child: Flexible(
-                      child: KCustomButton(
-                        widget: InkWell(
-                          radius: 50,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Constants.textColor.withOpacity(1),
-                                    width: .8),
-                                color:
-                                    Constants.searchScreenWhite.withOpacity(.8),
-                                borderRadius: BorderRadius.circular(50)),
-                            child: Icon(Icons.search_rounded,
-                                size: 32,
-                                color: searchIconColor ?? Constants.textColor),
-                          )
-                              .animate()
-                              .shimmer(
-                                  color: Constants.primaryBackgroundColor
-                                      .withOpacity(0.7),
-                                  delay: const Duration(milliseconds: 700))
-                              .then()
-                              .shake(
-                                  duration: const Duration(milliseconds: 500)),
-                        ),
-                        onTap: () => _searchNotifier.state = true,
+                    child: KCustomButton(
+                      widget: InkWell(
+                        radius: 50,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Constants.textColor.withOpacity(1),
+                                  width: .8),
+                              color:
+                                  Constants.searchScreenWhite.withOpacity(.8),
+                              borderRadius: BorderRadius.circular(50)),
+                          child: Icon(Icons.search_rounded,
+                              size: 32,
+                              color: searchIconColor ?? Constants.textColor),
+                        )
+                            .animate()
+                            .shimmer(
+                                color: Constants.appWhite.withOpacity(0.7),
+                                delay: const Duration(milliseconds: 700))
+                            .then()
+                            .shake(
+                                duration: const Duration(milliseconds: 500)),
                       ),
+                      onTap: () => _searchNotifier.state = true,
                     ),
                   ),
                 ),
