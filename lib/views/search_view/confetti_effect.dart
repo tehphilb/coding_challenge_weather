@@ -1,26 +1,28 @@
 import 'dart:math';
-
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 class ConfettiEffect extends StatefulWidget {
-  const ConfettiEffect({super.key});
+  const ConfettiEffect({Key? key}) : super(key: key);
 
   @override
   ConfettiEffectState createState() => ConfettiEffectState();
 }
 
 class ConfettiEffectState extends State<ConfettiEffect> {
+  late ConfettiController _controllerCenter;
   late ConfettiController _controllerTopCenter;
   late ConfettiController _controllerBottomCenter;
 
   @override
   void initState() {
     super.initState();
+    _controllerCenter =
+        ConfettiController(duration: const Duration(milliseconds: 500));
     _controllerTopCenter =
-        ConfettiController(duration: const Duration(seconds: 10));
+        ConfettiController(duration: const Duration(milliseconds: 500));
     _controllerBottomCenter =
-        ConfettiController(duration: const Duration(seconds: 10));
+        ConfettiController(duration: const Duration(milliseconds: 500));
   }
 
   @override
@@ -30,7 +32,6 @@ class ConfettiEffectState extends State<ConfettiEffect> {
     super.dispose();
   }
 
-  /// A custom Path to paint stars.
   Path drawStar(Size size) {
     // Method to convert degree to radians
     double degToRad(double deg) => deg * (pi / 180.0);
@@ -55,63 +56,78 @@ class ConfettiEffectState extends State<ConfettiEffect> {
     return path;
   }
 
+  // Public method to play confetti from  center
+  void playCenter() {
+    _controllerCenter.play();
+  }
+
+  // Public method to play confetti from top center
+  void playTopCenter() {
+    _controllerTopCenter.play();
+  }
+
+  // Public method to play confetti from bottom center
+  void playBottomCenter() {
+    _controllerBottomCenter.play();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Stack(
         children: <Widget>[
-         
+          //CENTER -- Blast
+          Align(
+            alignment: Alignment.center,
+            child: ConfettiWidget(
+              confettiController: _controllerCenter,
+              blastDirectionality: BlastDirectionality
+                  .explosive, // don't specify a direction, blast randomly
+              shouldLoop:
+                  true, // start again as soon as the animation is finished
+              colors: const [
+                Colors.green,
+                Colors.blue,
+                Colors.pink,
+                Colors.orange,
+                Colors.purple
+              ], // manually specify the colors to be used
+              createParticlePath: drawStar, // define a custom shape/path.
+            ),
+          ),
           //TOP CENTER - shoot down
           Align(
             alignment: Alignment.topCenter,
             child: ConfettiWidget(
               confettiController: _controllerTopCenter,
-              blastDirection: pi / 2,
-              maxBlastForce: 5, // set a lower max blast force
-              minBlastForce: 2, // set a lower min blast force
+              minimumSize: const Size(5, 5),
+              maximumSize: const Size(10, 10),
+              blastDirectionality: BlastDirectionality.explosive,
+              maxBlastForce: 5,
+              minBlastForce: 2,
               emissionFrequency: 0.05,
-              numberOfParticles: 50, // a lot of particles at once
+              numberOfParticles: 20,
               gravity: 1,
             ),
           ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: TextButton(
-                onPressed: () {
-                  _controllerTopCenter.play();
-                },
-                child: _display('goliath')),
-          ),
+
           //BOTTOM CENTER
           Align(
             alignment: Alignment.bottomCenter,
             child: ConfettiWidget(
               confettiController: _controllerBottomCenter,
-              blastDirection: -pi / 2,
+              minimumSize: const Size(5, 5),
+              maximumSize: const Size(10, 10),
+              blastDirectionality: BlastDirectionality.explosive,
               emissionFrequency: 0.01,
               numberOfParticles: 20,
               maxBlastForce: 100,
               minBlastForce: 80,
-              gravity: 0.3,
+              gravity: 0.2,
             ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: TextButton(
-                onPressed: () {
-                  _controllerBottomCenter.play();
-                },
-                child: _display('hard and infrequent')),
           ),
         ],
       ),
-    );
-  }
-
-  Text _display(String text) {
-    return Text(
-      text,
-      style: const TextStyle(color: Colors.white, fontSize: 20),
     );
   }
 }
