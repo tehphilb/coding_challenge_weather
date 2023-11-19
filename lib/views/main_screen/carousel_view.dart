@@ -47,9 +47,7 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
           appBar: AppBar(
             elevation: 0.0,
             backgroundColor: colors[colorIndex],
-            leading: colorIndex == 0
-                ? AnimatedSearchContainer(color: colors[colorIndex])
-                : null, // If colorIndex is not 0, no leading widget is shown
+            leading: AnimatedSearchContainer(color: colors[colorIndex]),
             title: Text(
               widget.data[colorIndex].cityName,
               style: GoogleFonts.inter(
@@ -61,24 +59,42 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
             ),
             actions: colorIndex != 0
                 ? [
-                    IconButton(
-                      splashColor: Constants.transparent,
-                      onPressed: () async {
-                        await isarService
-                            .deleteName(widget.data[colorIndex].cityName);
-                        setState(() {
-                          widget.data.removeAt(colorIndex);
-                          colors.removeAt(colorIndex);
-                        });
-                      },
-                      icon: Icon(
-                        Icons.delete_outline_rounded,
-                        color: Constants.textColor,
-                        size: 36,
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(right: Constants.smallPadding),
+                      child: IconButton(
+                        splashColor: Constants.transparent,
+                        onPressed: () async {
+                          await isarService
+                              .deleteName(widget.data[colorIndex].cityName);
+                          setState(() {
+                            widget.data.removeAt(colorIndex);
+                            colors.removeAt(colorIndex);
+                          });
+                        },
+                        icon: Icon(
+                          Icons.delete_outline_rounded,
+                          color: Constants.textColor,
+                          size: 36,
+                        ),
                       ),
                     ),
                   ]
-                : null, // If colorIndex is 0, no actions are added
+                : [
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(right: Constants.smallPadding),
+                      child: IconButton(
+                        splashColor: Constants.transparent,
+                        onPressed: () async {},
+                        icon: Icon(
+                          Icons.refresh_rounded,
+                          color: Constants.textColor,
+                          size: 36,
+                        ),
+                      ),
+                    ),
+                  ], //TODO: Add refresh button and functionality
           ),
           body: SingleChildScrollView(
             child: Container(
@@ -304,8 +320,8 @@ class BlackCardView extends ConsumerWidget {
         ),
       ).animate().shimmer(
           curve: Curves.fastOutSlowIn,
-          delay: Duration(milliseconds: 500),
-          duration: Duration(milliseconds: 1500),
+          delay: Duration(milliseconds: 2500),
+          duration: Duration(milliseconds: 1200),
           // color: Colors.white
           colors: [
             color,

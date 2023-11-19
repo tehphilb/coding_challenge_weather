@@ -1,10 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:coding_challenge_weather/constants/constants.dart';
+import 'package:coding_challenge_weather/models/forecast_model.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class WeeklyForecastView extends StatelessWidget {
   const WeeklyForecastView({
@@ -18,8 +20,16 @@ class WeeklyForecastView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List forecast = data.forecast.map((e) => e.icon).toList();
-    print(forecast);
+    Map<DateTime, List<Forecast>> forecastMap = {};
+
+    for (var forecast in data.forecast) {
+      DateTime dateTime = DateTime.parse(forecast.date.toString());
+
+      forecastMap.putIfAbsent(dateTime, () => []).add(forecast);
+    }
+
+    print(forecastMap);
+
     return Scaffold(
       backgroundColor: color,
       appBar: AppBar(
@@ -44,41 +54,58 @@ class WeeklyForecastView extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding:
-            EdgeInsets.symmetric(horizontal: Constants.extraExtraLargePadding),
-        child: Center(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Constants.textColor,
-              borderRadius: BorderRadius.circular(Constants.extraLargePadding),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(Constants.extraExtraLargePadding),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  WeatherInfoColumn(
-                    icon: Icons.air_outlined,
-                    mainText: '${data.windSpeed} km/h',
-                    subtitle: 'Wind',
-                    color: color,
+        padding: EdgeInsets.only(
+            bottom: Constants.extraExtraExtraLargePadding,
+            left: Constants.extraExtraExtraLargePadding,
+            right: Constants.extraExtraExtraLargePadding,
+            top: Constants.extraExtraLargePadding),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Constants.textColor,
+            borderRadius: BorderRadius.circular(Constants.extraLargePadding),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(Constants.extraLargePadding),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    data.forecast[10].dayName,
+                    style: GoogleFonts.inter(
+                      color: color,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.3,
+                    ),
                   ),
-                  SizedBox(height: Constants.lagrePadding),
-                  WeatherInfoColumn(
-                    icon: Icons.water_drop_outlined,
-                    mainText: '${data.humidity}%',
-                    subtitle: 'Humidity',
-                    color: color,
-                  ),
-                  SizedBox(height: Constants.lagrePadding),
-                  WeatherInfoColumn(
-                    icon: Icons.visibility_outlined,
-                    mainText: '${data.visibility} km',
-                    subtitle: 'Visibility',
-                    color: color,
-                  ),
-                ],
-              ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    WeatherInfoColumn(
+                      icon: Icons.air_outlined,
+                      mainText: '${data.windSpeed} km/h',
+                      subtitle: 'Wind',
+                      color: color,
+                    ),
+                    SizedBox(height: Constants.lagrePadding),
+                    WeatherInfoColumn(
+                      icon: Icons.water_drop_outlined,
+                      mainText: '${data.humidity}%',
+                      subtitle: 'Humidity',
+                      color: color,
+                    ),
+                    SizedBox(height: Constants.lagrePadding),
+                    WeatherInfoColumn(
+                      icon: Icons.visibility_outlined,
+                      mainText: '${data.visibility} km',
+                      subtitle: 'Visibility',
+                      color: color,
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),

@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:coding_challenge_weather/env/env.dart';
 import 'package:coding_challenge_weather/models/city_names_model.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:coding_challenge_weather/api_keys.dart';
 
 class CityNamesApi {
   Future<List<CityName>> fetchCityNames(String value) async {
@@ -16,7 +16,7 @@ class CityNamesApi {
       final response = await http.get(
         url,
         headers: {
-          'X-Api-Key': geoApiKey,
+          'X-Api-Key': Env.geoApiKey,
         },
       );
 
@@ -24,12 +24,11 @@ class CityNamesApi {
         List<dynamic> json = jsonDecode(response.body);
         return json.map((e) => CityName.fromJson(e)).toList();
       } else {
-        //print('Request failed with status: ${response.statusCode}.');
         throw Exception(
             'Failed to load city names. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      //print('Caught error: $e');
+      print('Caught error: $e'); //TODO: handle error
       rethrow; // Use rethrow to preserve stack trace
     }
   }

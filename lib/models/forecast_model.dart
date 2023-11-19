@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 
 class Forecast {
+  final DateTime date;
   final String formattedDate;
   final String formattedTime;
   final String dayName;
@@ -9,6 +10,7 @@ class Forecast {
   final String description;
 
   Forecast({
+    required this.date,
     required this.formattedDate,
     required this.formattedTime,
     required this.dayName,
@@ -26,6 +28,7 @@ class Forecast {
     final description = json['weather'][0]['description'];
 
     return Forecast(
+      date: dateTime,
       formattedDate: formattedDate,
       formattedTime: formattedTime,
       dayName: dayName,

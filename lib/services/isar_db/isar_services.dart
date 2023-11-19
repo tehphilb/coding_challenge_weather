@@ -35,7 +35,6 @@ class IsarService {
       final citiesToDelete =
           await isar.citys.filter().nameEqualTo(cityName).findAll();
 
-      // Delete all cities that match the query
       for (var city in citiesToDelete) {
         await isar.citys.delete(city.id);
       }
@@ -47,14 +46,7 @@ class IsarService {
     return await isar.citys.where().findAll();
   }
 
-  void listenToCityChanges(Isar isar) {
-    Stream<void> cityChanged = isar.citys.watchLazy();
-
-    cityChanged.listen((_) {
-      print('A User changed');
-    });
-  }
-
+  // for develomenet purposes
   Future<void> cleanDb() async {
     final isar = await db;
     await isar.writeTxn(() => isar.clear());

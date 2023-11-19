@@ -30,7 +30,6 @@ class _SearchViewState extends ConsumerState<SearchView> {
   final controller = TextEditingController();
   final GlobalKey<ConfettiEffectState> confettiKey =
       GlobalKey<ConfettiEffectState>();
-
   Timer? debounce;
   List<CityName> nameSuggestions = [];
 
@@ -48,24 +47,39 @@ class _SearchViewState extends ConsumerState<SearchView> {
     super.dispose();
   }
 
+  // void onSearchChanged() {
+  //   if (debounce?.isActive ?? false) debounce!.cancel();
+
+  //   debounce = Timer(
+  //     const Duration(milliseconds: 500),
+  //     () {
+  //       if (controller.text.isEmpty) {
+  //         setState(() {
+  //           nameSuggestions = [];
+  //         });
+  //       } else {
+  //         geocodingService.fetchCityNames(controller.text).then((suggestions) {
+  //           setState(() {
+  //             nameSuggestions = suggestions;
+  //           });
+  //         });
+  //       }
+  //     },
+  //   );
+  // }
+
   void onSearchChanged() {
-    if (debounce?.isActive ?? false) debounce!.cancel();
-    debounce = Timer(
-      const Duration(milliseconds: 500),
-      () {
-        if (controller.text.isEmpty) {
-          setState(() {
-            nameSuggestions = [];
-          });
-        } else {
-          geocodingService.fetchCityNames(controller.text).then((suggestions) {
-            setState(() {
-              nameSuggestions = suggestions;
-            });
-          });
-        }
-      },
-    );
+    if (controller.text.isEmpty) {
+      setState(() {
+        nameSuggestions = [];
+      });
+    } else {
+      geocodingService.fetchCityNames(controller.text).then((suggestions) {
+        setState(() {
+          nameSuggestions = suggestions;
+        });
+      });
+    }
   }
 
   void saveToIsar(CityName suggestion, WidgetRef ref) async {
@@ -78,7 +92,7 @@ class _SearchViewState extends ConsumerState<SearchView> {
           ..country = suggestion.country
           ..state = suggestion.state,
       );
-      ref.refresh(weatherProvider);
+      ref.refresh(weatherProvider); //TODO: Find a better way to refresh
     } catch (e) {
       print('Error adding city: $e'); //TODO: Add error handling
     }
@@ -96,7 +110,6 @@ class _SearchViewState extends ConsumerState<SearchView> {
             alignment: Alignment.center,
             child: SearchField(
                 searchFieldHeight: 40,
-                //backIcon: Icons.arrow_back_rounded, // (icon, size
                 backIconColor: Constants.textColor,
                 centerTitle: 'Search',
                 centerTitleStyle: GoogleFonts.inter(

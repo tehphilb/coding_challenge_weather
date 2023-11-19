@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:coding_challenge_weather/env/env.dart';
 import 'package:coding_challenge_weather/services/isar_db/isar_services.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:coding_challenge_weather/api_keys.dart';
 import 'package:coding_challenge_weather/services/api/geo_api.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
 
@@ -32,7 +32,7 @@ Future<List<WeatherModel>> fetchWeatherForecasts(
     final longitude = coordinates[1];
 
     final url = Uri.parse(
-        'https://api.openweathermap.org/data/2.5/forecast?lat=$latitude&lon=$longitude&units=metric&appid=$weatherApiKey');
+        'https://api.openweathermap.org/data/2.5/forecast?lat=$latitude&lon=$longitude&units=metric&appid=${Env.weatherApiKey}');
 
     forecastFutures.add(http.get(url).then((response) {
       if (response.statusCode == 200) {

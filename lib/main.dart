@@ -1,3 +1,5 @@
+import 'package:coding_challenge_weather/env/env.dart';
+import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:coding_challenge_weather/views/main_screen/main_screen.dart';
 
 void main() {
+  OpenAI.apiKey = Env.openAiKey;
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then(
