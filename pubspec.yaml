@@ -1,12 +1,12 @@
 name: coding_challenge_weather
 description: A new Flutter project.
 
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.1.5 <4.0.0'
+  sdk: ">=3.1.5 <4.0.0"
 
 dependencies:
   animation_search_bar: ^0.0.10
@@ -19,6 +19,7 @@ dependencies:
   flutter_carousel_slider: ^1.1.0
   flutter_riverpod: ^2.4.5
   flutter_staggered_animations: ^1.1.1
+  flutter_svg: ^2.0.9
   geolocator: ^10.1.0
   google_fonts: ^6.1.0
   http: ^1.1.0
@@ -40,6 +41,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/icons/svg-static/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

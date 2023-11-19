@@ -1,9 +1,11 @@
 import 'package:coding_challenge_weather/constants/constants.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
+import 'package:coding_challenge_weather/services/icon_wrapper.dart';
 import 'package:coding_challenge_weather/views/weekly_forecast_view/animated_forecast_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DailyForecastView extends ConsumerWidget {
@@ -75,11 +77,17 @@ class _DailyForcastState extends State<DailyForcast> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Image.network(
-                    'https://openweathermap.org/img/wn/${widget.data.forecast[index].icon}.png',
-                    width: 52,
-                    // color: Constants.textColor,
-                  ), //TODO: change icons
+                  SvgPicture.asset(
+                    WeatherIconMapper.getIconPath(
+                        widget.data.forecast[index].icon),
+                    width: 40,
+                    // You can set other properties as needed
+                  ),
+                  // Image.network(
+                  //   'https://openweathermap.org/img/wn/${widget.data.forecast[index].icon}.png',
+                  //   width: 52,
+                  //   // color: Constants.textColor,
+                  // ), //TODO: change icons
                   Column(
                     children: [
                       Text(

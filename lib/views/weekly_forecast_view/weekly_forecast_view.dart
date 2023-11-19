@@ -18,7 +18,7 @@ class WeeklyForecastView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List forecast = data.forecast.map((e) => e.formattedDate).toList();
+    List forecast = data.forecast.map((e) => e.icon).toList();
     print(forecast);
     return Scaffold(
       backgroundColor: color,
