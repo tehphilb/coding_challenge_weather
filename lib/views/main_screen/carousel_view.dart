@@ -3,6 +3,7 @@
 import 'package:coding_challenge_weather/constants/constants.dart';
 import 'package:coding_challenge_weather/models/isar_city_collection.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
+import 'package:coding_challenge_weather/services/api/open_ai_api.dart';
 import 'package:coding_challenge_weather/services/isar_db/isar_services.dart';
 import 'package:coding_challenge_weather/services/provider/weather_data_provider.dart';
 import 'package:coding_challenge_weather/views/main_screen/daily_forecast_view.dart';
@@ -259,16 +260,33 @@ class SummaryView extends ConsumerWidget {
           ),
         ),
         SizedBox(height: Constants.normalPadding),
-        Text(
-          'Now it feels like ${data.feelsLikeTemp}°, actually ${data.currentTemp}°.\nToday, the temperture will be between ${data.minTemp}° and ${data.maxTemp}°.',
-          style: GoogleFonts.inter(
-            letterSpacing: -0.3,
-            color: Constants.textColor,
-            fontSize: 12.0,
-            fontWeight: FontWeight.w500,
-          ),
+        FutureBuilder(
+          future: runOpenAI(data),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Text(
+                snapshot.data.toString(),
+                style: GoogleFonts.inter(
+                  letterSpacing: -0.3,
+                  color: Constants.textColor,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              );
+            } else {
+              return Text(
+                'Let me think about the weather for a second...',
+                style: GoogleFonts.inter(
+                  letterSpacing: -0.3,
+                  color: Constants.textColor,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w500,
+                ),
+              );
+            }
+          },
         ),
-        SizedBox(height: Constants.extraExtraLargePadding),
+        SizedBox(height: Constants.extraLargePadding),
       ],
     );
   }

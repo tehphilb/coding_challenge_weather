@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:coding_challenge_weather/constants/constants.dart';
@@ -34,24 +35,8 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(
-            color: Constants.appWhite,
-          ),
-          SizedBox(height: 20),
-          Text(
-            'Loading your position...',
-            style: TextStyle(
-              color: Constants.appWhite,
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
+    return Container(
+      color: Constants.textColor,
+    ).animate().shimmer();
   }
 }

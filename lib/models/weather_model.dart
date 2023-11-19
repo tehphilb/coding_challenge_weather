@@ -35,7 +35,7 @@ class WeatherModel {
     final currentWeatherData =
         json['list'][0]; // current weather is the first item in the list
     final dateTime = DateTime.parse(currentWeatherData['dt_txt']);
-    final formattedDate = DateFormat('EEEE, dd MMMM').format(dateTime);
+    final formattedDate = DateFormat('EEEE, dd MMMM, hh:mm').format(dateTime);
 
     // Extract the forecast data into a list of Forecast objects
     List<Forecast> forecastList = json['list'].map<Forecast>((item) {
@@ -59,4 +59,23 @@ class WeatherModel {
       forecast: forecastList, // Assign the forecast list here
     );
   }
+
+  @override
+  String toString() {
+    return 'WeatherModel(\n'
+        '  cityName: $cityName,\n'
+        '  formattedDate: $formattedDate,\n'
+        '  currentTemp: $currentTemp°C,\n'
+        '  feelsLikeTemp: $feelsLikeTemp°C,\n'
+        '  minTemp: $minTemp°C,\n'
+        '  maxTemp: $maxTemp°C,\n'
+        '  windSpeed: $windSpeed km/h,\n'
+        '  humidity: $humidity%,\n'
+        '  visibility: $visibility km,\n'
+        '  icon: $icon,\n'
+        '  description: $description,\n'
+        '  forecast: ${forecast.length} entries\n'
+        ')';
+  }
 }
+
