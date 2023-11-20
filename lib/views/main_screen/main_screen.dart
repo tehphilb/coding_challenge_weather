@@ -37,6 +37,13 @@ class LoadingIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Constants.textColor,
-    ).animate().shimmer();
+    )
+        .animate(
+          onPlay: (controller) => controller.repeat(),
+        )
+        .shimmer(
+          color: Constants.appWhite.withOpacity(0.2),
+          duration: const Duration(milliseconds: 1000),
+        );
   }
 }

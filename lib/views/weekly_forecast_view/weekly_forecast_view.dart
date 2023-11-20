@@ -20,12 +20,19 @@ class WeeklyForecastView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<DateTime, List<Forecast>> forecastMap = {};
+   Map<DateTime, List<Forecast>> forecastMap = {};
 
-    for (var forecast in data.forecast) {
+    DateTime today = DateTime.now();
+    DateTime todayDateOnly = DateTime(today.year, today.month, today.day);
+
+    for (var forecast in data.forecast.skip(8)) {
       DateTime dateTime = DateTime.parse(forecast.date.toString());
 
-      forecastMap.putIfAbsent(dateTime, () => []).add(forecast);
+      if (dateTime.isAfter(todayDateOnly) &&
+          dateTime.hour >= 9 &&
+          dateTime.hour < 21) {
+        forecastMap.putIfAbsent(dateTime, () => []).add(forecast);
+      }
     }
 
     print(forecastMap);
@@ -77,6 +84,7 @@ class WeeklyForecastView extends StatelessWidget {
                       fontSize: 24,
                       fontWeight: FontWeight.w900,
                       letterSpacing: -0.3,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
                 ),
@@ -130,18 +138,22 @@ class WeatherInfoColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Icon(icon, color: color, size: 36),
-        SizedBox(height: Constants.lagrePadding),
-        Text(mainText,
-            style: TextStyle(
-                color: color, fontSize: 16.0, fontWeight: FontWeight.bold)),
-        Text(subtitle,
-            style: TextStyle(
-                color: color, fontSize: 10.0, fontWeight: FontWeight.w400)),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(top: Constants.lagrePadding),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Icon(icon, color: color, size: 32),
+          SizedBox(height: Constants.normalPadding),
+          Text(mainText,
+              style: TextStyle(
+                  color: color, fontSize: 16.0, fontWeight: FontWeight.bold)),
+          SizedBox(height: Constants.smallPadding),
+          Text(subtitle,
+              style: TextStyle(
+                  color: color, fontSize: 10.0, fontWeight: FontWeight.w400)),
+        ],
+      ),
     );
   }
 }

@@ -1,9 +1,6 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:coding_challenge_weather/constants/constants.dart';
 import 'package:coding_challenge_weather/models/isar_city_collection.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
-import 'package:coding_challenge_weather/services/api/open_ai_api.dart';
 import 'package:coding_challenge_weather/services/isar_db/isar_services.dart';
 import 'package:coding_challenge_weather/services/provider/weather_data_provider.dart';
 import 'package:coding_challenge_weather/views/main_screen/daily_forecast_view.dart';
@@ -11,7 +8,6 @@ import 'package:coding_challenge_weather/views/search_view/animated_search_conta
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:flutter_carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -32,25 +28,31 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
   City city = City();
 
   final bool isPlaying = false;
-  GlobalKey sliderKey = GlobalKey();
-  GlobalKey scollKey = GlobalKey();
+  late CarouselSliderController sliderController;
+  ScrollController scollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    sliderController = CarouselSliderController();
+  }
 
   @override
   Widget build(BuildContext context) {
     List<Color> colors = ref.watch(colorListProvider(widget.data));
 
     return CarouselSlider.builder(
-      // key: sliderKey,
+      controller: sliderController,
       unlimitedMode: false,
-      slideBuilder: (colorIndex) {
+      slideBuilder: (index) {
         return Scaffold(
-          backgroundColor: colors[colorIndex],
+          backgroundColor: colors[index],
           appBar: AppBar(
             elevation: 0.0,
-            backgroundColor: colors[colorIndex],
-            leading: AnimatedSearchContainer(color: colors[colorIndex]),
+            backgroundColor: colors[index],
+            leading: AnimatedSearchContainer(color: colors[index]),
             title: Text(
-              widget.data[colorIndex].cityName,
+              widget.data[index].cityName,
               style: GoogleFonts.inter(
                 color: Constants.textColor,
                 fontSize: 24,
@@ -58,7 +60,7 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
                 letterSpacing: -0.3,
               ),
             ),
-            actions: colorIndex != 0
+            actions: index != 0
                 ? [
                     Padding(
                       padding:
@@ -67,13 +69,13 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
                         splashColor: Constants.transparent,
                         onPressed: () async {
                           await isarService
-                              .deleteName(widget.data[colorIndex].cityName);
+                              .deleteName(widget.data[index].cityName);
                           setState(() {
-                            widget.data.removeAt(colorIndex);
-                            colors.removeAt(colorIndex);
+                            widget.data.removeAt(index);
+                            colors.removeAt(index);
                           });
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.delete_outline_rounded,
                           color: Constants.textColor,
                           size: 36,
@@ -88,7 +90,7 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
                       child: IconButton(
                         splashColor: Constants.transparent,
                         onPressed: () async {},
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.refresh_rounded,
                           color: Constants.textColor,
                           size: 36,
@@ -99,7 +101,7 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
           ),
           body: SingleChildScrollView(
             child: Container(
-              color: colors[colorIndex],
+              color: colors[index],
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: Constants.extraExtraExtraLargePadding,
@@ -107,25 +109,25 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
                 child: Column(
                   children: [
                     DateView(
-                      data: widget.data[colorIndex],
-                      color: colors[colorIndex],
+                      data: widget.data[index],
+                      color: colors[index],
                     ),
                     DescriptionView(
-                      data: widget.data[colorIndex],
+                      data: widget.data[index],
                     ),
                     TemperatureView(
-                      data: widget.data[colorIndex],
+                      data: widget.data[index],
                     ),
                     SummaryView(
-                      data: widget.data[colorIndex],
+                      data: widget.data[index],
                     ),
                     BlackCardView(
-                      data: widget.data[colorIndex],
-                      color: colors[colorIndex],
+                      data: widget.data[index],
+                      color: colors[index],
                     ),
                     DailyForecastView(
-                      data: widget.data[colorIndex],
-                      color: colors[colorIndex],
+                      data: widget.data[index],
+                      color: colors[index],
                     ),
                   ],
                 ),
@@ -178,8 +180,8 @@ class TemperatureView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final Duration animationDuration = Duration(milliseconds: 1000);
-    final Duration animationDelay = Duration(milliseconds: 300);
+    const Duration animationDuration = Duration(milliseconds: 1000);
+    const Duration animationDelay = Duration(milliseconds: 300);
 
     return Align(
       alignment: Alignment.center,
@@ -203,7 +205,7 @@ class TemperatureView extends ConsumerWidget {
               ),
             ).animate().fadeIn(duration: animationDuration).moveY(
                   delay: animationDelay,
-                  duration: Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 200),
                   begin: 20,
                 ),
             Text(
@@ -218,13 +220,13 @@ class TemperatureView extends ConsumerWidget {
                 .fadeIn(duration: animationDuration)
                 .moveY(
                   delay: animationDelay,
-                  duration: Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 200),
                   begin: 10,
                 )
                 .then()
                 .fadeIn(duration: animationDuration)
                 .moveX(
-                  duration: Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: 500),
                   begin: -40,
                 ),
           ],
@@ -259,34 +261,17 @@ class SummaryView extends ConsumerWidget {
             fontWeight: FontWeight.w900,
           ),
         ),
-        SizedBox(height: Constants.normalPadding),
-        FutureBuilder(
-          future: runOpenAI(data),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Text(
-                snapshot.data.toString(),
-                style: GoogleFonts.inter(
-                  letterSpacing: -0.3,
-                  color: Constants.textColor,
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w500,
-                ),
-              );
-            } else {
-              return Text(
-                'Let me think about the weather for a second...',
-                style: GoogleFonts.inter(
-                  letterSpacing: -0.3,
-                  color: Constants.textColor,
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w500,
-                ),
-              );
-            }
-          },
+        const SizedBox(height: Constants.normalPadding),
+        Text(
+          data.openAIDailySummary,
+          style: GoogleFonts.inter(
+            letterSpacing: -0.3,
+            color: Constants.textColor,
+            fontSize: 12.0,
+            fontWeight: FontWeight.w500,
+          ),
         ),
-        SizedBox(height: Constants.extraLargePadding),
+        const SizedBox(height: Constants.extraLargePadding),
       ],
     );
   }
@@ -320,14 +305,14 @@ class BlackCardView extends ConsumerWidget {
               subtitle: 'Wind',
               color: color,
             ),
-            SizedBox(height: Constants.lagrePadding),
+            const SizedBox(height: Constants.lagrePadding),
             WeatherInfoColumn(
               icon: Icons.water_drop_outlined,
               mainText: '${data.humidity}%',
               subtitle: 'Humidity',
               color: color,
             ),
-            SizedBox(height: Constants.lagrePadding),
+            const SizedBox(height: Constants.lagrePadding),
             WeatherInfoColumn(
               icon: Icons.visibility_outlined,
               mainText: '${data.visibility} km',
@@ -338,8 +323,8 @@ class BlackCardView extends ConsumerWidget {
         ),
       ).animate().shimmer(
           curve: Curves.fastOutSlowIn,
-          delay: Duration(milliseconds: 2500),
-          duration: Duration(milliseconds: 1200),
+          delay: const Duration(milliseconds: 2500),
+          duration: const Duration(milliseconds: 1200),
           // color: Colors.white
           colors: [
             color,
@@ -412,7 +397,7 @@ class WeatherInfoColumn extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Icon(icon, color: color, size: 36),
-        SizedBox(height: Constants.lagrePadding),
+        const SizedBox(height: Constants.lagrePadding),
         Text(
           mainText,
           style: TextStyle(
@@ -421,7 +406,7 @@ class WeatherInfoColumn extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: Constants.lagrePadding),
+        const SizedBox(height: Constants.lagrePadding),
         Text(
           subtitle,
           style: TextStyle(

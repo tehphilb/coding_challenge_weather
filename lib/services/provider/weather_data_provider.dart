@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final weatherProvider = FutureProvider<List<WeatherModel>>((ref) async {
-  final coordinates = await addCoordinates();
-  return fetchWeatherForecasts(coordinates);
+  return getCompleteWeatherModel();
 });
 
 final colorListProvider =

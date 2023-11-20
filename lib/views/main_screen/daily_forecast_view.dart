@@ -108,9 +108,9 @@ class DailyForecastState extends State<DailyForecast> {
           .animate()
           .fadeIn(
               delay: Duration(milliseconds: 400 * index),
-              duration: Duration(milliseconds: 600))
+              duration: const Duration(milliseconds: 600))
           .moveY(
-            duration: Duration(milliseconds: 400),
+            duration: const Duration(milliseconds: 400),
             begin: 80,
           );
       forecastWidgets.add(forecastItem);
