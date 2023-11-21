@@ -2,12 +2,13 @@
 
 ## Issues:
 
-weekly forcecast screen not fully develped yet
+Weekly forcecast screen is not yet fully developed
 
-color generator missing to fill, at the moment fixed amount of colors. This will generate an error when adding too much cityies.
+Colour generator missing, currently fixed number of colours. This leads to an error message if too many cities are added.
 
-proper error handling missing
+Proper error handling is missing
 
+The app does not work with web, due to known issues with Isar db. For more information check: https://github.com/isar/isar/issues/1458
 
 ## Dribble template
 
