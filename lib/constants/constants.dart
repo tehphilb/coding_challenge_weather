@@ -23,7 +23,7 @@ class Constants {
   //Padding
   static const double smallPadding = 4.0;
   static const double normalPadding = 8.0;
-  static const double lagrePadding = 12.0;
+  static const double largePadding = 12.0;
   static const double extraLargePadding = 16.0;
   static const double extraExtraLargePadding = 24.0;
   static const double extraExtraExtraLargePadding = 32.0;

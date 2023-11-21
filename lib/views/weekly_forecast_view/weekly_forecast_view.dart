@@ -3,8 +3,10 @@
 import 'package:coding_challenge_weather/constants/constants.dart';
 import 'package:coding_challenge_weather/models/forecast_model.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
+import 'package:coding_challenge_weather/services/icon_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -20,22 +22,36 @@ class WeeklyForecastView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   Map<DateTime, List<Forecast>> forecastMap = {};
+    Map<String, List<Forecast>> groupedForecasts = {};
 
     DateTime today = DateTime.now();
-    DateTime todayDateOnly = DateTime(today.year, today.month, today.day);
+    DateTime justToday = DateTime(today.year, today.month, today.day);
 
-    for (var forecast in data.forecast.skip(8)) {
-      DateTime dateTime = DateTime.parse(forecast.date.toString());
+    for (var forecast in data.forecast) {
+      DateTime forecastDate = DateTime.parse(forecast.date.toString());
+      DateTime justForecastDate =
+          DateTime(forecastDate.year, forecastDate.month, forecastDate.day);
 
-      if (dateTime.isAfter(todayDateOnly) &&
-          dateTime.hour >= 9 &&
-          dateTime.hour < 21) {
-        forecastMap.putIfAbsent(dateTime, () => []).add(forecast);
+      // Skip the forecast if the date is today
+      if (justToday.isAtSameMomentAs(justForecastDate)) {
+        continue;
       }
+
+      // Skip the forecast if the time is not between 09:00 and 21:00
+      if (forecastDate.hour < 9 || forecastDate.hour > 21) {
+        continue;
+      }
+
+      String formattedDate = forecast.dayName;
+
+      if (!groupedForecasts.containsKey(formattedDate)) {
+        groupedForecasts[formattedDate] = [];
+      }
+
+      groupedForecasts[formattedDate]!.add(forecast);
     }
 
-    print(forecastMap);
+    print(groupedForecasts.entries.elementAt(2));
 
     return Scaffold(
       backgroundColor: color,
@@ -60,61 +76,88 @@ class WeeklyForecastView extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.only(
-            bottom: Constants.extraExtraExtraLargePadding,
-            left: Constants.extraExtraExtraLargePadding,
-            right: Constants.extraExtraExtraLargePadding,
-            top: Constants.extraExtraLargePadding),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Constants.textColor,
-            borderRadius: BorderRadius.circular(Constants.extraLargePadding),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(Constants.extraLargePadding),
-            child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    data.forecast[10].dayName,
-                    style: GoogleFonts.inter(
-                      color: color,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -0.3,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+              bottom: Constants.extraExtraExtraLargePadding,
+              left: Constants.extraExtraExtraLargePadding,
+              right: Constants.extraExtraExtraLargePadding,
+              top: Constants.extraExtraLargePadding),
+          child: Column(
+            children: [
+              for (var forecast in groupedForecasts.entries)
+                Column(
                   children: [
-                    WeatherInfoColumn(
-                      icon: Icons.air_outlined,
-                      mainText: '${data.windSpeed} km/h',
-                      subtitle: 'Wind',
-                      color: color,
+                    SizedBox(height: Constants.extraLargePadding),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 5,
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius:
+                            BorderRadius.circular(Constants.extraLargePadding),
+                        border: Border.all(color: Constants.textColor),
+                      ),
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.all(Constants.extraLargePadding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              forecast.key,
+                              style: GoogleFonts.inter(
+                                color: Constants.textColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                            SizedBox(
+                              height: Constants.normalPadding,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                for (var forecastItem in forecast.value)
+                                  Column(
+                                    children: [
+                                      SizedBox(height: Constants.normalPadding),
+                                      Text(
+                                        forecastItem.formattedTime,
+                                        style: GoogleFonts.inter(
+                                          color: Constants.textColor,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      SizedBox(height: Constants.smallPadding),
+                                      SvgPicture.asset(
+                                        WeatherIconMapper.getIconPath(
+                                            forecastItem.icon),
+                                        width: 32,
+                                      ),
+                                      SizedBox(height: Constants.smallPadding),
+                                      Text(
+                                        '${forecastItem.temperature}°C',
+                                        style: GoogleFonts.inter(
+                                          color: Constants.textColor,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    SizedBox(height: Constants.lagrePadding),
-                    WeatherInfoColumn(
-                      icon: Icons.water_drop_outlined,
-                      mainText: '${data.humidity}%',
-                      subtitle: 'Humidity',
-                      color: color,
-                    ),
-                    SizedBox(height: Constants.lagrePadding),
-                    WeatherInfoColumn(
-                      icon: Icons.visibility_outlined,
-                      mainText: '${data.visibility} km',
-                      subtitle: 'Visibility',
-                      color: color,
-                    ),
+                    SizedBox(height: Constants.extraLargePadding),
                   ],
                 ),
-              ],
-            ),
+            ],
           ),
         ),
       ),
@@ -139,15 +182,15 @@ class WeatherInfoColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: Constants.lagrePadding),
+      padding: const EdgeInsets.only(top: Constants.largePadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(icon, color: color, size: 32),
+          Icon(icon, color: color, size: 24),
           SizedBox(height: Constants.normalPadding),
           Text(mainText,
               style: TextStyle(
-                  color: color, fontSize: 16.0, fontWeight: FontWeight.bold)),
+                  color: color, fontSize: 14.0, fontWeight: FontWeight.bold)),
           SizedBox(height: Constants.smallPadding),
           Text(subtitle,
               style: TextStyle(

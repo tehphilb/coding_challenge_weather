@@ -1,5 +1,4 @@
 import 'package:coding_challenge_weather/constants/constants.dart';
-import 'package:coding_challenge_weather/models/isar_city_collection.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
 import 'package:coding_challenge_weather/services/isar_db/isar_services.dart';
 import 'package:coding_challenge_weather/services/provider/weather_data_provider.dart';
@@ -24,12 +23,9 @@ class CarouselView extends ConsumerStatefulWidget {
 }
 
 class _CarouselViewState extends ConsumerState<CarouselView> {
-  IsarService isarService = IsarService();
-  City city = City();
-
-  final bool isPlaying = false;
   late CarouselSliderController sliderController;
   ScrollController scollController = ScrollController();
+  final bool isPlaying = false;
 
   @override
   void initState() {
@@ -68,7 +64,7 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
                       child: IconButton(
                         splashColor: Constants.transparent,
                         onPressed: () async {
-                          await isarService
+                          await IsarService()
                               .deleteName(widget.data[index].cityName);
                           setState(() {
                             widget.data.removeAt(index);
@@ -305,14 +301,14 @@ class BlackCardView extends ConsumerWidget {
               subtitle: 'Wind',
               color: color,
             ),
-            const SizedBox(height: Constants.lagrePadding),
+            const SizedBox(height: Constants.largePadding),
             WeatherInfoColumn(
               icon: Icons.water_drop_outlined,
               mainText: '${data.humidity}%',
               subtitle: 'Humidity',
               color: color,
             ),
-            const SizedBox(height: Constants.lagrePadding),
+            const SizedBox(height: Constants.largePadding),
             WeatherInfoColumn(
               icon: Icons.visibility_outlined,
               mainText: '${data.visibility} km',
@@ -397,7 +393,7 @@ class WeatherInfoColumn extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Icon(icon, color: color, size: 36),
-        const SizedBox(height: Constants.lagrePadding),
+        const SizedBox(height: Constants.largePadding),
         Text(
           mainText,
           style: TextStyle(
@@ -406,7 +402,7 @@ class WeatherInfoColumn extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: Constants.lagrePadding),
+        const SizedBox(height: Constants.largePadding),
         Text(
           subtitle,
           style: TextStyle(

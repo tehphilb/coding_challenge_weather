@@ -67,7 +67,7 @@ class DailyForecastState extends State<DailyForecast> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(height: Constants.lagrePadding),
+              const SizedBox(height: Constants.largePadding),
               Text(
                 '${forecast.temperature}°',
                 style: GoogleFonts.inter(

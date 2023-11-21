@@ -20,7 +20,9 @@ class MainScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Constants.textColor,
       body: weatherDataAsyncValue.when(
-        data: (data) => CarouselView(data: data),
+        data: (data) {
+          return CarouselView(data: data);
+        },
         loading: () => const LoadingIndicator(),
         error: (e, _) => Center(child: Text('Error: $e')),
       ),
