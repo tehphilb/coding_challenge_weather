@@ -1,16 +1,23 @@
 # coding_challenge_weather
 
-A new Flutter project.
+## Issues:
 
-## Getting Started
+weekly forcecast screen not fully develped yet
 
-This project is a starting point for a Flutter application.
+color generator missing to fill, at the moment fixed amount of colors. This will generate an error when adding too much cityies.
 
-A few resources to get you started if this is your first Flutter project:
+proper error handling missing
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Dribble template
+
+https://dribbble.com/shots/20675054-Mobile-Weather-app
+
+
+## Required API keys
+
+https://openweathermap.org/api
+
+https://api-ninjas.com/
+
+https://platform.openai.com/
