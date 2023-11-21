@@ -12,7 +12,7 @@ The app does not work with web, due to known issues with Isar db. For more infor
 
 ## Dribble template
 
-https://dribbble.com/shots/20675054-Mobile-Weather-app
+https://dribbble.com/shots/20675054-Mobile-Weather-app?utm_source=Clipboard_Shot&utm_campaign=desire-creative_agency&utm_content=Mobile%20%7C%20Weather%20app&utm_medium=Social_Share&utm_source=Clipboard_Shot&utm_campaign=desire-creative_agency&utm_content=Mobile%20%7C%20Weather%20app&utm_medium=Social_Share
 
 
 ## Required API keys
