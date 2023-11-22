@@ -6,10 +6,9 @@ class Forecast {
   final String formattedTime;
   final String dayName;
   final int temperature;
-  final int minTemp;
-  final int maxTemp;
   final String icon;
   final String description;
+  final int windSpeed;
 
   Forecast({
     required this.date,
@@ -17,10 +16,9 @@ class Forecast {
     required this.formattedTime,
     required this.dayName,
     required this.temperature,
-    required this.minTemp,
-    required this.maxTemp,
     required this.icon,
     required this.description,
+    required this.windSpeed,
   });
 
   factory Forecast.fromJson(Map<String, dynamic> json) {
@@ -29,9 +27,8 @@ class Forecast {
     final formattedTime = DateFormat('HH:mm').format(dateTime);
     final dayName = DateFormat('EEEE').format(dateTime);
     final temperature = (json['main']['temp'].toDouble()).round();
-    final minTemp = (json['main']['temp_min'].toDouble()).round();
-    final maxTemp = (json['main']['temp_max'].toDouble()).round();
     final description = json['weather'][0]['description'];
+    final windSpeed = (json['wind']['speed'].toDouble()).round();
 
     return Forecast(
       date: dateTime,
@@ -39,15 +36,14 @@ class Forecast {
       formattedTime: formattedTime,
       dayName: dayName,
       temperature: temperature,
-      minTemp: minTemp,
-      maxTemp: maxTemp,
       icon: json['weather'][0]['icon'],
       description: description,
+      windSpeed: windSpeed,
     );
   }
 
   @override
   String toString() {
-    return 'Forecast(date: $date, formattedDate: $formattedDate, formattedTime: $formattedTime, dayName: $dayName, temperature: $temperature, minTemp: $minTemp, maxTemp: $maxTemp, icon: $icon, description: $description)';
+    return 'Forecast(date: $date, formattedDate: $formattedDate, formattedTime: $formattedTime, dayName: $dayName, temperature: $temperature, icon: $icon, description: $description, windSpeed: $windSpeed)';
   }
 }
