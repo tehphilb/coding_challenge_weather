@@ -1,5 +1,7 @@
 # coding_challenge_weather
 
+![](preview.gif)
+
 ## Issues
 
 Weekly forcecast screen is not yet fully developed
