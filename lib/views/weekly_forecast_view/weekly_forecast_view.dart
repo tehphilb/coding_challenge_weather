@@ -41,9 +41,9 @@ class WeeklyForecastView extends StatelessWidget {
       }
 
       // Skip the forecast if the time is not between 09:00 and 21:00
-      if (forecastDate.hour < 6 || forecastDate.hour > 21) {
-        continue;
-      }
+      // if (forecastDate.hour < 6 || forecastDate.hour > 21) {
+      //   continue;
+      // }
 
       String formattedDate = forecast.dayName;
 
@@ -203,10 +203,59 @@ class WDLineChart extends StatelessWidget {
           ),
           titlesData: FlTitlesData(
             rightTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (double value, TitleMeta meta) {
+                  double text = windSpeeds[value.toInt() % windSpeeds.length];
+                  // Adjust text as needed
+                  return SideTitleWidget(
+                    axisSide: meta.axisSide,
+                    child: Row(
+                      children: [
+                        Text(
+                          text.toInt().toString(),
+                          style: TextStyle(
+                              color: Constants.textColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700),
+                        ),
+                        Text(
+                          'm/s',
+                          style: TextStyle(
+                              color: Constants.textColor,
+                              fontSize: 8,
+                              fontWeight: FontWeight.w700),
+                        )
+                      ],
+                    ),
+                  );
+                },
+                reservedSize: 35,
+                interval: 1, // Adjust the interval as needed
+              ),
             ),
             topTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (double value, TitleMeta meta) {
+                  // Adjust the index as necessary
+                  SvgPicture icon = SvgPicture.asset(
+                    WeatherIconMapper.getIconPath(
+                        icons[value.toInt() % icons.length]),
+                    width: 28,
+                  );
+                  return SideTitleWidget(
+                    axisSide: meta.axisSide,
+                    child: Column(
+                      children: [
+                        icon,
+                      ],
+                    ),
+                  );
+                },
+                reservedSize: 36,
+                interval: 1, // Adjust the interval as needed
+              ),
             ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
@@ -214,21 +263,16 @@ class WDLineChart extends StatelessWidget {
                 getTitlesWidget: (double value, TitleMeta meta) {
                   // Adjust the index as necessary
                   String text = times[value.toInt() % times.length];
-                  SvgPicture icon = SvgPicture.asset(
-                    WeatherIconMapper.getIconPath(
-                        icons[value.toInt() % icons.length]),
-                    width: 32,
-                  );
+
                   return SideTitleWidget(
                     axisSide: meta.axisSide,
                     child: Column(
                       children: [
-                        icon,
                         Text(
                           text,
                           style: TextStyle(
                             color: Constants.textColor,
-                            fontSize: 12,
+                            fontSize: 10,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -236,7 +280,7 @@ class WDLineChart extends StatelessWidget {
                     ),
                   );
                 },
-                reservedSize: 28,
+                reservedSize: 30,
                 interval: 1, // Adjust the interval as needed
               ),
             ),
@@ -251,12 +295,12 @@ class WDLineChart extends StatelessWidget {
                       text,
                       style: TextStyle(
                           color: Constants.textColor,
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: FontWeight.w700),
                     ),
                   );
                 },
-                reservedSize: 28,
+                reservedSize: 30,
                 interval: 1, // Adjust the interval as needed
               ),
             ),
