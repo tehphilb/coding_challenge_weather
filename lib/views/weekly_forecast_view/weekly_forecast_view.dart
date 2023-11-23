@@ -118,7 +118,7 @@ class WeeklyForecastView extends StatelessWidget {
                     SizedBox(height: Constants.extraLargePadding),
                     Container(
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 4,
+                      height: MediaQuery.of(context).size.height / 3,
                       decoration: BoxDecoration(
                         color: color,
                         borderRadius:
@@ -214,19 +214,29 @@ class WDLineChart extends StatelessWidget {
                 getTitlesWidget: (double value, TitleMeta meta) {
                   // Adjust the index as necessary
                   String text = times[value.toInt() % times.length];
+                  SvgPicture icon = SvgPicture.asset(
+                    WeatherIconMapper.getIconPath(
+                        icons[value.toInt() % icons.length]),
+                    width: 32,
+                  );
                   return SideTitleWidget(
                     axisSide: meta.axisSide,
-                    child: Text(
-                      text,
-                      style: TextStyle(
-                        color: Constants.textColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    child: Column(
+                      children: [
+                        icon,
+                        Text(
+                          text,
+                          style: TextStyle(
+                            color: Constants.textColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 },
-                reservedSize: 22,
+                reservedSize: 28,
                 interval: 1, // Adjust the interval as needed
               ),
             ),
@@ -246,7 +256,7 @@ class WDLineChart extends StatelessWidget {
                     ),
                   );
                 },
-                reservedSize: 22,
+                reservedSize: 28,
                 interval: 1, // Adjust the interval as needed
               ),
             ),
