@@ -47,39 +47,25 @@ class _SearchViewState extends ConsumerState<SearchView> {
     super.dispose();
   }
 
-  // void onSearchChanged() {
-  //   if (debounce?.isActive ?? false) debounce!.cancel();
-
-  //   debounce = Timer(
-  //     const Duration(milliseconds: 500),
-  //     () {
-  //       if (controller.text.isEmpty) {
-  //         setState(() {
-  //           nameSuggestions = [];
-  //         });
-  //       } else {
-  //         geocodingService.fetchCityNames(controller.text).then((suggestions) {
-  //           setState(() {
-  //             nameSuggestions = suggestions;
-  //           });
-  //         });
-  //       }
-  //     },
-  //   );
-  // }
-
   void onSearchChanged() {
-    if (controller.text.isEmpty) {
-      setState(() {
-        nameSuggestions = [];
-      });
-    } else {
-      geocodingService.fetchCityNames(controller.text).then((suggestions) {
-        setState(() {
-          nameSuggestions = suggestions;
-        });
-      });
-    }
+    if (debounce?.isActive ?? false) debounce!.cancel();
+
+    debounce = Timer(
+      const Duration(milliseconds: 200),
+      () {
+        if (controller.text.isEmpty) {
+          setState(() {
+            nameSuggestions = [];
+          });
+        } else {
+          geocodingService.fetchCityNames(controller.text).then((suggestions) {
+            setState(() {
+              nameSuggestions = suggestions;
+            });
+          });
+        }
+      },
+    );
   }
 
   void saveToIsar(CityName suggestion, WidgetRef ref) async {
@@ -92,6 +78,7 @@ class _SearchViewState extends ConsumerState<SearchView> {
           ..country = suggestion.country
           ..state = suggestion.state,
       );
+      // ignore: unused_result
       ref.refresh(weatherProvider); //TODO: Find a better way to refresh
     } catch (e) {
       print('Error adding city: $e'); //TODO: Add error handling
@@ -146,7 +133,7 @@ class _SearchViewState extends ConsumerState<SearchView> {
                         //confettiKey.currentState?.playTopCenter();
                         //confettiKey.currentState?.playBottomCenter();
                         await Future.delayed(
-                          const Duration(seconds: 1),
+                          const Duration(seconds: 2),
                         );
                         if (mounted) {
                           Navigator.pop(context);

@@ -1,6 +1,7 @@
 import 'package:coding_challenge_weather/constants/constants.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
 import 'package:coding_challenge_weather/services/isar_db/isar_services.dart';
+import 'package:coding_challenge_weather/services/provider/views_count_provider.dart';
 import 'package:coding_challenge_weather/services/provider/weather_data_provider.dart';
 import 'package:coding_challenge_weather/views/main_screen/daily_forecast_view.dart';
 import 'package:coding_challenge_weather/views/search_view/animated_search_container.dart';
@@ -35,7 +36,9 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
 
   @override
   Widget build(BuildContext context) {
+
     List<Color> colors = ref.watch(colorListProvider(widget.data));
+    final viewsCountAsyncValue = ref.watch(viewsCountProvider);
 
     return CarouselSlider.builder(
       controller: sliderController,
@@ -84,6 +87,7 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
                       padding:
                           const EdgeInsets.only(right: Constants.smallPadding),
                       child: IconButton(
+                        splashRadius: 1,
                         splashColor: Constants.transparent,
                         onPressed: () async {},
                         icon: const Icon(
@@ -116,11 +120,29 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
                     ),
                     SummaryView(
                       data: widget.data[index],
-                    ),
+                    )
+                        .animate()
+                        .moveY(
+                          delay: const Duration(milliseconds: 100),
+                          duration: const Duration(milliseconds: 400),
+                          begin: 60,
+                        )
+                        .fadeIn(
+                          duration: const Duration(milliseconds: 300),
+                        ),
                     BlackCardView(
                       data: widget.data[index],
                       color: colors[index],
-                    ),
+                    )
+                        .animate()
+                        .moveY(
+                          delay: const Duration(milliseconds: 200),
+                          duration: const Duration(milliseconds: 400),
+                          begin: 50,
+                        )
+                        .fadeIn(
+                          duration: const Duration(milliseconds: 700),
+                        ),
                     DailyForecastView(
                       data: widget.data[index],
                       color: colors[index],
@@ -319,8 +341,8 @@ class BlackCardView extends ConsumerWidget {
         ),
       ).animate().shimmer(
           curve: Curves.fastOutSlowIn,
-          delay: const Duration(milliseconds: 2500),
-          duration: const Duration(milliseconds: 1200),
+          delay: const Duration(milliseconds: 1575),
+          duration: const Duration(milliseconds: 800),
           // color: Colors.white
           colors: [
             color,

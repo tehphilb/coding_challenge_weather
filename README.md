@@ -4,8 +4,6 @@
 
 ## Issues
 
-Weekly forcecast screen is not yet fully developed
-
 Colour generator missing, currently fixed number of colours. This leads to an error message if too many cities are added.
 
 Proper error handling is missing

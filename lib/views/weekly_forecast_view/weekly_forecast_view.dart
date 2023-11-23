@@ -200,38 +200,6 @@ class WDLineChart extends StatelessWidget {
             },
           ),
           titlesData: FlTitlesData(
-            rightTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (double value, TitleMeta meta) {
-                  double text = windSpeeds[value.toInt() % windSpeeds.length];
-                  // Adjust text as needed
-                  return SideTitleWidget(
-                    axisSide: meta.axisSide,
-                    child: Row(
-                      children: [
-                        Text(
-                          text.toInt().toString(),
-                          style: TextStyle(
-                              color: Constants.textColor,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700),
-                        ),
-                        Text(
-                          'm/s',
-                          style: TextStyle(
-                              color: Constants.textColor,
-                              fontSize: 8,
-                              fontWeight: FontWeight.w700),
-                        )
-                      ],
-                    ),
-                  );
-                },
-                reservedSize: 35,
-                interval: 1, // Adjust the interval as needed
-              ),
-            ),
             topTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
@@ -271,7 +239,7 @@ class WDLineChart extends StatelessWidget {
                           style: TextStyle(
                             color: Constants.textColor,
                             fontSize: 10,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ],
@@ -294,7 +262,7 @@ class WDLineChart extends StatelessWidget {
                       style: TextStyle(
                           color: Constants.textColor,
                           fontSize: 10,
-                          fontWeight: FontWeight.w700),
+                          fontWeight: FontWeight.w800),
                     ),
                   );
                 },
@@ -302,30 +270,29 @@ class WDLineChart extends StatelessWidget {
                 interval: 1, // Adjust the interval as needed
               ),
             ),
+            rightTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: false,
+              ),
+            ),
           ),
-
           borderData: FlBorderData(
             show: true,
-            border: Border.all(color: const Color(0xff37434d), width: 2),
+            border: Border.all(color: Constants.textColor, width: 1),
           ),
           minX: 0,
           maxX: (times.length - 1).toDouble(),
           minY: temperatures.reduce(min),
-          maxY: temperatures.reduce(max), // Adjust as necessary
+          maxY: temperatures.reduce(max),
           lineBarsData: [
             LineChartBarData(
               spots: List.generate(temperatures.length, (index) {
                 return FlSpot(index.toDouble(), temperatures[index]);
               }),
               isCurved: true,
-              color: Color.fromARGB(255, 57, 155, 67),
-            ),
-            LineChartBarData(
-              spots: List.generate(windSpeeds.length, (index) {
-                return FlSpot(index.toDouble(), windSpeeds[index]);
-              }),
-              isCurved: true,
-              color: Color.fromARGB(255, 63, 113, 160),
+              color: Constants.textColor,
+              barWidth: 1,
+              // ... (other properties)
             ),
           ],
         ),
