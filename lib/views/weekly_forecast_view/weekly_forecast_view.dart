@@ -78,8 +78,6 @@ class WeeklyForecastView extends StatelessWidget {
       }
     }
 
-    print(iconsByDay);
-
     return Scaffold(
       backgroundColor: color,
       appBar: AppBar(
@@ -320,109 +318,17 @@ class WDLineChart extends StatelessWidget {
                 return FlSpot(index.toDouble(), temperatures[index]);
               }),
               isCurved: true,
-              color: Constants.appWhite,
-              // other properties...
+              color: Color.fromARGB(255, 57, 155, 67),
+            ),
+            LineChartBarData(
+              spots: List.generate(windSpeeds.length, (index) {
+                return FlSpot(index.toDouble(), windSpeeds[index]);
+              }),
+              isCurved: true,
+              color: Color.fromARGB(255, 63, 113, 160),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ForecastRow extends StatelessWidget {
-  const ForecastRow({
-    super.key,
-    required this.forecast,
-  });
-
-  final MapEntry<String, List<Forecast>> forecast;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          for (var forecastItem in forecast.value)
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Container(
-                height: MediaQuery.of(context).size.height / 6,
-                width: MediaQuery.of(context).size.width / 6,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Constants.textColor),
-                  borderRadius:
-                      BorderRadius.circular(Constants.extraLargePadding),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SizedBox(height: Constants.normalPadding),
-                    Text(
-                      forecastItem.formattedTime,
-                      style: GoogleFonts.inter(
-                        color: Constants.textColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: Constants.smallPadding),
-                    SvgPicture.asset(
-                      WeatherIconMapper.getIconPath(forecastItem.icon),
-                      width: 32,
-                    ),
-                    SizedBox(height: Constants.smallPadding),
-                    Text(
-                      '${forecastItem.temperature}°C',
-                      style: GoogleFonts.inter(
-                        color: Constants.textColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class WeatherInfoColumn extends StatelessWidget {
-  final IconData icon;
-  final String mainText;
-  final String subtitle;
-  final Color color;
-
-  const WeatherInfoColumn({
-    Key? key,
-    required this.icon,
-    required this.mainText,
-    required this.subtitle,
-    required this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: Constants.largePadding),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Icon(icon, color: color, size: 24),
-          SizedBox(height: Constants.normalPadding),
-          Text(mainText,
-              style: TextStyle(
-                  color: color, fontSize: 14.0, fontWeight: FontWeight.bold)),
-          SizedBox(height: Constants.smallPadding),
-          Text(subtitle,
-              style: TextStyle(
-                  color: color, fontSize: 10.0, fontWeight: FontWeight.w400)),
-        ],
       ),
     );
   }
