@@ -1,6 +1,6 @@
 # coding_challenge_weather
 
-![preview](preview.gif)
+![](preview.gif)
 
 ## Issues
 
