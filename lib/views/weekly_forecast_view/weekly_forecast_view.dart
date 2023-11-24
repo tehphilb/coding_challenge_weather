@@ -193,7 +193,7 @@ class WDLineChart extends StatelessWidget {
                           style: const TextStyle(
                             color: Constants.textColor,
                             fontSize: 10,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ],
@@ -216,7 +216,7 @@ class WDLineChart extends StatelessWidget {
                       style: const TextStyle(
                           color: Constants.textColor,
                           fontSize: 10,
-                          fontWeight: FontWeight.w700),
+                          fontWeight: FontWeight.w800),
                     ),
                   );
                 },
@@ -225,7 +225,6 @@ class WDLineChart extends StatelessWidget {
               ),
             ),
           ),
-
           borderData: FlBorderData(
             show: true,
             border: Border.all(color: const Color(0xff37434d), width: 2),
@@ -236,12 +235,13 @@ class WDLineChart extends StatelessWidget {
           maxY: temperatures.reduce(max), // Adjust as necessary
           lineBarsData: [
             LineChartBarData(
+                curveSmoothness: 0.2,
                 spots: List.generate(temperatures.length, (index) {
                   return FlSpot(index.toDouble(), temperatures[index]);
                 }),
                 isCurved: true,
                 color: Constants.textColor,
-                barWidth: 0.7),
+                barWidth: 0.9),
           ],
         ),
       ),
