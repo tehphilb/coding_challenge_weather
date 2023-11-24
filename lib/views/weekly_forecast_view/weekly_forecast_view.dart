@@ -6,12 +6,11 @@ import 'package:coding_challenge_weather/constants/constants.dart';
 import 'package:coding_challenge_weather/models/forecast_model.dart';
 import 'package:coding_challenge_weather/models/weather_model.dart';
 import 'package:coding_challenge_weather/services/icon_wrapper.dart';
+import 'package:coding_challenge_weather/services/repos/weekly_forecast_repo.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 class WeeklyForecastView extends StatelessWidget {
   const WeeklyForecastView({
@@ -25,58 +24,10 @@ class WeeklyForecastView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, List<Forecast>> groupedForecasts = {};
-
-    DateTime today = DateTime.now();
-    DateTime justToday = DateTime(today.year, today.month, today.day);
-
-    for (var forecast in data.forecast) {
-      DateTime forecastDate = DateTime.parse(forecast.date.toString());
-      DateTime justForecastDate =
-          DateTime(forecastDate.year, forecastDate.month, forecastDate.day);
-
-      // Skip the forecast if the date is today
-      if (justToday.isAtSameMomentAs(justForecastDate)) {
-        continue;
-      }
-
-      // Skip the forecast if the time is not between 09:00 and 21:00
-      // if (forecastDate.hour < 6 || forecastDate.hour > 21) {
-      //   continue;
-      // }
-
-      String formattedDate = forecast.dayName;
-
-      if (!groupedForecasts.containsKey(formattedDate)) {
-        groupedForecasts[formattedDate] = [];
-      }
-
-      groupedForecasts[formattedDate]!.add(forecast);
-    }
-
-    Map<String, List<double>> temperaturesByDay = {};
-    Map<String, List<String>> iconsByDay = {};
-    Map<String, List<String>> timesByDay = {};
-    Map<String, List<double>> windSpeedByDay = {};
-
-    for (var entry in groupedForecasts.entries) {
-      String dayName = entry.key;
-
-      // Initialize empty lists for temperatures, icons, and times if the dayName key doesn't exist
-      temperaturesByDay.putIfAbsent(dayName, () => []);
-      iconsByDay.putIfAbsent(dayName, () => []);
-      timesByDay.putIfAbsent(dayName, () => []);
-      windSpeedByDay.putIfAbsent(dayName, () => []);
-
-      // Iterate over each forecast in the list for this day
-      for (var forecast in entry.value) {
-        // Add the temperature, icon, and formatted time to the appropriate lists
-        temperaturesByDay[dayName]!.add(forecast.temperature.toDouble());
-        iconsByDay[dayName]!.add(forecast.icon);
-        timesByDay[dayName]!.add(forecast.formattedTime);
-        windSpeedByDay[dayName]!.add(forecast.windSpeed.toDouble());
-      }
-    }
+    WeeklyForecastRepo forecastRepo = WeeklyForecastRepo(data: data);
+    Map<String, List<Forecast>> groupedForecasts =
+        forecastRepo.getGroupedForecasts();
+    Map<String, WeatherData> chartData = forecastRepo.prepareChartData();
 
     return Scaffold(
       backgroundColor: color,
@@ -144,10 +95,11 @@ class WeeklyForecastView extends StatelessWidget {
                             ),
                             //ForecastRow(forecast: forecast),
                             WDLineChart(
-                              temperatures: temperaturesByDay[forecast.key]!,
-                              icons: iconsByDay[forecast.key]!,
-                              times: timesByDay[forecast.key]!,
-                              windSpeeds: windSpeedByDay[forecast.key]!,
+                              temperatures:
+                                  chartData[forecast.key]!.temperatures,
+                              icons: chartData[forecast.key]!.icons,
+                              times: chartData[forecast.key]!.times,
+                              windSpeeds: chartData[forecast.key]!.windSpeeds,
                             ),
                           ],
                         ),
@@ -200,6 +152,38 @@ class WDLineChart extends StatelessWidget {
             },
           ),
           titlesData: FlTitlesData(
+            rightTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (double value, TitleMeta meta) {
+                  double text = windSpeeds[value.toInt() % windSpeeds.length];
+                  // Adjust text as needed
+                  return SideTitleWidget(
+                    axisSide: meta.axisSide,
+                    child: Row(
+                      children: [
+                        Text(
+                          text.toInt().toString(),
+                          style: TextStyle(
+                              color: Constants.textColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700),
+                        ),
+                        Text(
+                          'm/s',
+                          style: TextStyle(
+                              color: Constants.textColor,
+                              fontSize: 8,
+                              fontWeight: FontWeight.w700),
+                        )
+                      ],
+                    ),
+                  );
+                },
+                reservedSize: 35,
+                interval: 1, // Adjust the interval as needed
+              ),
+            ),
             topTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
@@ -239,7 +223,7 @@ class WDLineChart extends StatelessWidget {
                           style: TextStyle(
                             color: Constants.textColor,
                             fontSize: 10,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ],
@@ -262,7 +246,7 @@ class WDLineChart extends StatelessWidget {
                       style: TextStyle(
                           color: Constants.textColor,
                           fontSize: 10,
-                          fontWeight: FontWeight.w800),
+                          fontWeight: FontWeight.w700),
                     ),
                   );
                 },
@@ -270,29 +254,30 @@ class WDLineChart extends StatelessWidget {
                 interval: 1, // Adjust the interval as needed
               ),
             ),
-            rightTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: false,
-              ),
-            ),
           ),
+
           borderData: FlBorderData(
             show: true,
-            border: Border.all(color: Constants.textColor, width: 1),
+            border: Border.all(color: const Color(0xff37434d), width: 2),
           ),
           minX: 0,
           maxX: (times.length - 1).toDouble(),
           minY: temperatures.reduce(min),
-          maxY: temperatures.reduce(max),
+          maxY: temperatures.reduce(max), // Adjust as necessary
           lineBarsData: [
             LineChartBarData(
               spots: List.generate(temperatures.length, (index) {
                 return FlSpot(index.toDouble(), temperatures[index]);
               }),
               isCurved: true,
-              color: Constants.textColor,
-              barWidth: 1,
-              // ... (other properties)
+              color: Color.fromARGB(255, 57, 155, 67),
+            ),
+            LineChartBarData(
+              spots: List.generate(windSpeeds.length, (index) {
+                return FlSpot(index.toDouble(), windSpeeds[index]);
+              }),
+              isCurved: true,
+              color: Color.fromARGB(255, 63, 113, 160),
             ),
           ],
         ),
