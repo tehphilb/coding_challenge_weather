@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:math';
 
 import 'package:coding_challenge_weather/constants/constants.dart';
@@ -54,7 +52,7 @@ class WeeklyForecastView extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
               bottom: Constants.extraExtraExtraLargePadding,
               left: Constants.extraExtraExtraLargePadding,
               right: Constants.extraExtraExtraLargePadding,
@@ -64,7 +62,7 @@ class WeeklyForecastView extends StatelessWidget {
               for (var forecast in groupedForecasts.entries)
                 Column(
                   children: [
-                    SizedBox(height: Constants.extraLargePadding),
+                    const SizedBox(height: Constants.extraLargePadding),
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height / 3,
@@ -90,7 +88,7 @@ class WeeklyForecastView extends StatelessWidget {
                                 decoration: TextDecoration.underline,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: Constants.extraLargePadding,
                             ),
                             //ForecastRow(forecast: forecast),
@@ -105,7 +103,7 @@ class WeeklyForecastView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: Constants.extraLargePadding),
+                    const SizedBox(height: Constants.extraLargePadding),
                   ],
                 ),
             ],
@@ -139,49 +137,22 @@ class WDLineChart extends StatelessWidget {
             show: true,
             drawVerticalLine: true,
             getDrawingHorizontalLine: (value) {
-              return FlLine(
+              return const FlLine(
                 color: Constants.textColor,
                 strokeWidth: .7,
               );
             },
             getDrawingVerticalLine: (value) {
-              return FlLine(
+              return const FlLine(
                 color: Constants.textColor,
                 strokeWidth: .7,
               );
             },
           ),
           titlesData: FlTitlesData(
-            rightTitles: AxisTitles(
+            rightTitles: const AxisTitles(
               sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (double value, TitleMeta meta) {
-                  double text = windSpeeds[value.toInt() % windSpeeds.length];
-                  // Adjust text as needed
-                  return SideTitleWidget(
-                    axisSide: meta.axisSide,
-                    child: Row(
-                      children: [
-                        Text(
-                          text.toInt().toString(),
-                          style: TextStyle(
-                              color: Constants.textColor,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700),
-                        ),
-                        Text(
-                          'm/s',
-                          style: TextStyle(
-                              color: Constants.textColor,
-                              fontSize: 8,
-                              fontWeight: FontWeight.w700),
-                        )
-                      ],
-                    ),
-                  );
-                },
-                reservedSize: 35,
-                interval: 1, // Adjust the interval as needed
+                showTitles: false,
               ),
             ),
             topTitles: AxisTitles(
@@ -213,14 +184,13 @@ class WDLineChart extends StatelessWidget {
                 getTitlesWidget: (double value, TitleMeta meta) {
                   // Adjust the index as necessary
                   String text = times[value.toInt() % times.length];
-
                   return SideTitleWidget(
                     axisSide: meta.axisSide,
                     child: Column(
                       children: [
                         Text(
                           text,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Constants.textColor,
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
@@ -243,7 +213,7 @@ class WDLineChart extends StatelessWidget {
                     axisSide: meta.axisSide,
                     child: Text(
                       text,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Constants.textColor,
                           fontSize: 10,
                           fontWeight: FontWeight.w700),
@@ -266,19 +236,12 @@ class WDLineChart extends StatelessWidget {
           maxY: temperatures.reduce(max), // Adjust as necessary
           lineBarsData: [
             LineChartBarData(
-              spots: List.generate(temperatures.length, (index) {
-                return FlSpot(index.toDouble(), temperatures[index]);
-              }),
-              isCurved: true,
-              color: Color.fromARGB(255, 57, 155, 67),
-            ),
-            LineChartBarData(
-              spots: List.generate(windSpeeds.length, (index) {
-                return FlSpot(index.toDouble(), windSpeeds[index]);
-              }),
-              isCurved: true,
-              color: Color.fromARGB(255, 63, 113, 160),
-            ),
+                spots: List.generate(temperatures.length, (index) {
+                  return FlSpot(index.toDouble(), temperatures[index]);
+                }),
+                isCurved: true,
+                color: Constants.textColor,
+                barWidth: 0.7),
           ],
         ),
       ),
