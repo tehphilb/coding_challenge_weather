@@ -4,8 +4,6 @@
 
 ## Issues
 
-Colour generator missing, currently fixed number of colours. This leads to an error message if too many cities are added.
-
 Proper error handling is missing
 
 The app does not work with web, due to known issues with Isar db. For more information check: <https://github.com/isar/isar/issues/1458>

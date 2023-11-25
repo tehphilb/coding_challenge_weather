@@ -37,7 +37,7 @@ class _CarouselViewState extends ConsumerState<CarouselView> {
   @override
   Widget build(BuildContext context) {
     List<Color> colors = ref.watch(colorListProvider(widget.data));
-    final viewsCount = ref.watch(viewsCountProvider).asData?.value;
+    //int viewsCount = ref.watch(viewsCountProvider).asData!.value;
 
     return CarouselSlider.builder(
       controller: sliderController,
